@@ -3,7 +3,7 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "Coursework_1"
+name = "Rest.py"
 version = "0.0.1"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -12,3 +12,8 @@ dependencies = [
     "pytest",
 
 ]
+
+[tool.setuptools]
+package_dir = "src"
+packages.find = { where = "src" }
+
