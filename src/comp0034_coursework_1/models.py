@@ -3,7 +3,7 @@
 from typing import List
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from Rest import db
+from Router import db
 from datetime import  datetime
 class Trainer(db.Model):
     __tablename__ ='trainer'
