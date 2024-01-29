@@ -38,7 +38,7 @@ def create_app(test_config=None):
 
     # Models are defined in the models module, so you must import them before calling create_all, otherwise SQLAlchemy
     # will not know about them.
-    from Router.models import Trainer, Data, Player
+    from router.models import Trainer, Data, Player
     # Create the tables in the database
     # create_all does not update tables if they are already in the database.
     with app.app_context():
