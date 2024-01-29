@@ -4,6 +4,7 @@ from typing import List
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from Rest import db
+from datetime import  datetime
 class Trainer(db.Model):
     __tablename__ ='trainer'
     Trainer_ID: Mapped[str] = mapped_column(db.String(16), primary_key=True,nullable=False)
@@ -25,30 +26,28 @@ class Player(db.Model):
     # one-to-many relationship with Event, the relationship in Event is called 'region'
     # https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#one-to-many
 
+class Data(db.Model):
+    __tablename__ = "data"
+    Data_ID: Mapped[str] = mapped_column(db.String(16), primary_key=True,unique=True,nullable=False)
+    Player_ID: Mapped[str] = mapped_column(ForeignKey("player.Player_ID"))
+    player = relationship('Player', back_populates="data")
+    Trainer_ID: Mapped[str] = mapped_column(ForeignKey("trainer.Trainer_ID"))
+    trainer = relationship('Trainer', back_populates="data")
+    Timestamp: Mapped[datetime] = mapped_column(db.Datetime,nullable=True)
+    accX: Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    accY: Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    accZ: Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    gyroX: Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    gyroY: Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    gyroZ: Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    Activity: Mapped[bool] = mapped_column(db.Boolean, nullable=True)
+    Resultant_Acc : Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    Resultant_Gyro : Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    Average_Speed: Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    Average_rotational_speed:Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    Total_displacement:Mapped[float] = mapped_column(db.Float(32),nullable=True)
+    Total_time : Mapped[datetime] = mapped_column(db.Datetime,nullable=True)
 
-
-class Event(db.Model):
-    __tablename__ = "event"
-    id: Mapped[int] = mapped_column(db.Integer, primary_key=True)
-    type: Mapped[str] = mapped_column(db.Text, nullable=False)
-    year: Mapped[int] = mapped_column(db.Integer, nullable=False)
-    country: Mapped[str] = mapped_column(db.Text, nullable=False)
-    host: Mapped[str] = mapped_column(db.Text, nullable=False)
-    NOC: Mapped[str] = mapped_column(ForeignKey("region.NOC"))
-    # add relationship to the parent table, Region, which has a relationship called 'events'
-    region: Mapped["Region"] = relationship("Region", back_populates="events")
-    start: Mapped[str] = mapped_column(db.Text, nullable=True)
-    end: Mapped[str] = mapped_column(db.Text, nullable=True)
-    duration: Mapped[int] = mapped_column(db.Integer, nullable=True)
-    disabilities_included: Mapped[str] = mapped_column(db.Text, nullable=True)
-    countries: Mapped[str] = mapped_column(db.Text, nullable=True)
-    events: Mapped[int] = mapped_column(db.Integer, nullable=True)
-    athletes: Mapped[int] = mapped_column(db.Integer, nullable=True)
-    sports: Mapped[int] = mapped_column(db.Integer, nullable=True)
-    participants_m: Mapped[int] = mapped_column(db.Integer, nullable=True)
-    participants_f: Mapped[int] = mapped_column(db.Integer, nullable=True)
-    participants: Mapped[int] = mapped_column(db.Integer, nullable=True)
-    highlights: Mapped[str] = mapped_column(db.Text, nullable=True)
 
     def __init__(self, email: str, password: str):
         """
