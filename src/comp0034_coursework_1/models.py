@@ -17,11 +17,14 @@ class Trainer(db.Model):
 class Player(db.Model):
     __tablename__ = "player"
     Player_ID: Mapped[str] = mapped_column(db.String(16), primary_key=True,unique=True,nullable=False)
-    region: Mapped[str] = mapped_column(db.Text, nullable=False)
-    notes: Mapped[str] = mapped_column(db.Text, nullable=True)
+    password: Mapped[str] = mapped_column(db.String(32), unique=False, nullable=False)
+    Data_ID: Mapped[str] = mapped_column(ForeignKey("data.Data_ID"))
+    data = relationship('Data', back_populates="player")
+    Trainer_ID: Mapped[str] = mapped_column(ForeignKey("trainer.Trainer_ID"))
+    trainer = relationship('Trainer', back_populates="player")
     # one-to-many relationship with Event, the relationship in Event is called 'region'
     # https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#one-to-many
-    events: Mapped[List["Event"]] = relationship(back_populates="region")
+
 
 
 class Event(db.Model):
