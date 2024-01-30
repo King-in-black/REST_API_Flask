@@ -3,7 +3,7 @@
 from typing import List
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from Router import db
+from router import db
 from datetime import  datetime
 class Trainer(db.Model):
     __tablename__ ='trainer'
@@ -58,3 +58,4 @@ class Data(db.Model):
         """
         self.email = email
         self.password = password
+
