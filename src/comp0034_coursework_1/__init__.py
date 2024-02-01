@@ -1,5 +1,5 @@
 import os
-
+from flask_marshmallow import Marshmallow
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
-
+ma=Marshmallow(model_class=Base)
 def create_app(test_config=None):
     # create the Flask app
     app = Flask(__name__, instance_relative_config=True)
@@ -35,7 +35,7 @@ def create_app(test_config=None):
         # This lis likely to be circa line 40.
     # Initialise Flask with the SQLAlchemy database extension
     db.init_app(app)
-
+    ma.init_app(app)
     # Models are defined in the models module, so you must import them before calling create_all, otherwise SQLAlchemy
     # will not know about them.
     from router.models import Trainer, Data, Player
