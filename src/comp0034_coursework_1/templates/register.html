@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Welcome to Motion Prediction App</title>
+    <style>
+        body {
+            text-align: center; 'put content into the central'
+            margin-top: 50px; 'add some margin to vistualize the title'
+        }
+        input {
+            width: 150px;
+            height: 50px;
+            font-size: 20px;
+            margin: 10px;
+        }
+        select{
+            width: 150px;
+            height: 50px;
+            font-size: 20px;
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Motion Prediction App</h1>
+    <form action="/register" method="post">
+        <input type="text" name="Trainer_ID" placeholder="Trainer_ID" required><br>
+        <input type="text" name="Player_ID" placeholder="Player_ID" required><br>
+        <input type="password" name="password" placeholder="Password" required><br>
+        <select name="role" required>
+            <option value="">Select Role</option>
+            <option value="player">Player</option>
+            <option value="trainer">Trainer</option>
+        </select><br>
+        <button type="submit">Register</button>
+    </form>
+</body>
+</html>
