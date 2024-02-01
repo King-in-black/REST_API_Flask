@@ -41,7 +41,7 @@ class Player_Schema(ma.SQLAlchemySchema):
         load_instance = True
         include_relationships = True
 
-    Player_ID=ma.auto_field()
-    password=ma.auto_field()
-    Data_ID=ma.auto_field()
-    Trainer_ID=ma.auto_field()
+    Player_ID = ma.auto_field()
+    password = ma.auto_field()
+    Data_ID = ma.auto_field()
+    Trainer_ID = ma.auto_field()

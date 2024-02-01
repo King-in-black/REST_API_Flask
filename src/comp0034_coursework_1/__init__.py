@@ -9,7 +9,7 @@ class Base(DeclarativeBase):
     pass
 
 db = SQLAlchemy(model_class=Base)
-ma=Marshmallow(model_class=Base)
+ma = Marshmallow(model_class=Base)
 def create_app(test_config=None):
     # create the Flask app
     app = Flask(__name__, instance_relative_config=True)
