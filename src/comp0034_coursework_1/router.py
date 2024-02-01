@@ -20,13 +20,13 @@ def homepage():
             return 'Invalid action', 400
     return render_template('button_homepage_login.html')
 
-@app.route('/register')
+@app.route('/register', methods=['GET', 'POST'])
 def register():
     # The function returns the message we want to display in the user’s browser. The default content type is HTML,
     # so HTML in the string will be rendered by the browser.
     return 'Hello World re!'
 
-@app.route('/login')
+@app.route('/login',methods=['GET', 'POST'])
 def login():
     # The function returns the message we want to display in the user’s browser. The default content type is HTML,
     # so HTML in the string will be rendered by the browser.
