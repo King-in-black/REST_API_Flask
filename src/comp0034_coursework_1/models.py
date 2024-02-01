@@ -3,7 +3,7 @@
 from typing import List
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from router import db
+from __init__ import db
 from datetime import  datetime
 class Trainer(db.Model):
     __tablename__ ='trainer'
@@ -33,7 +33,7 @@ class Data(db.Model):
     player = relationship('Player', back_populates="data")
     Trainer_ID: Mapped[str] = mapped_column(ForeignKey("trainer.Trainer_ID"))
     trainer = relationship('Trainer', back_populates="data")
-    Timestamp: Mapped[datetime] = mapped_column(db.Datetime,nullable=True)
+    Timestamp: Mapped[datetime] = mapped_column(db.DateTime,nullable=True)
     accX: Mapped[float] = mapped_column(db.Float(32),nullable=True)
     accY: Mapped[float] = mapped_column(db.Float(32),nullable=True)
     accZ: Mapped[float] = mapped_column(db.Float(32),nullable=True)

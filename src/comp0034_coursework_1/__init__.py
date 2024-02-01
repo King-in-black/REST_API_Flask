@@ -38,13 +38,13 @@ def create_app(test_config=None):
     ma.init_app(app)
     # Models are defined in the models module, so you must import them before calling create_all, otherwise SQLAlchemy
     # will not know about them.
-    from router.models import Trainer, Data, Player
+    from models import Trainer, Data, Player
     # Create the tables in the database
     # create_all does not update tables if they are already in the database.
     with app.app_context():
         db.create_all()
         add_data_from_csv()
-        from router import router
+        import router
     return app
     # ensure the instance folder exists
 def add_data_from_csv():
@@ -52,7 +52,6 @@ def add_data_from_csv():
 
     # Add import here and not at the top of the file to avoid circular import issues
 
-    from comp0034_coursework_1.models import Data
 
     # If there are no Events, then add them
     first_data = db.session.execute(db.select(Data)).first()
