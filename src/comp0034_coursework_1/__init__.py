@@ -5,11 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase
 import csv
 from pathlib import Path
-class Base(DeclarativeBase):
-    pass
 
-db = SQLAlchemy(model_class=Base)
-ma = Marshmallow(model_class=Base)
+db = SQLAlchemy()
+ma = Marshmallow()
 def create_app(test_config=None):
     # create the Flask app
     app = Flask(__name__, instance_relative_config=True)
@@ -38,15 +36,15 @@ def create_app(test_config=None):
     ma.init_app(app)
     # Models are defined in the models module, so you must import them before calling create_all, otherwise SQLAlchemy
     # will not know about them.
-    from models import Trainer, Data, Player
+    from .models import Trainer, Data, Player
     # Create the tables in the database
     # create_all does not update tables if they are already in the database.
     with app.app_context():
         db.create_all()
-        add_data_from_csv()
-        import router
     return app
     # ensure the instance folder exists
+
+'''
 def add_data_from_csv():
     """Adds data to the database if it does not already exist."""
 
@@ -78,3 +76,4 @@ def add_data_from_csv():
                 db.session.add(e)
             db.session.commit()
 
+'''

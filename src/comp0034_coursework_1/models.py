@@ -3,7 +3,7 @@
 from typing import List
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from __init__ import db
+from . import db
 from datetime import  datetime
 class Trainer(db.Model):
     __tablename__ ='trainer'
@@ -46,14 +46,4 @@ class Data(db.Model):
     Average_Speed: Mapped[float] = mapped_column(db.Float(32),nullable=True)
     Average_rotational_speed:Mapped[float] = mapped_column(db.Float(32),nullable=True)
 
-
-    def __init__(self, email: str, password: str):
-        """
-        Create a new User object using hashing the plain text password.
-        :type password_string: str
-        :type email: str
-        :returns None
-        """
-        self.email = email
-        self.password = password
 
