@@ -11,7 +11,9 @@ from.schemas import Trainer_Schema,Data_Schema,Player_Schema
 # Add a route for the 'home' page
 # use the route() decorator to tell Flask what URL should trigger our function.
 app = create_app()
-
+Trainer_Schema=Trainer_Schema(many=True)
+Data_Schema=Data_Schema(many=True)
+Player_Schema=Player_Schema(many=True)
 @app.route('/homepage', methods=['GET', 'POST'])
 def homepage():
     if request.method == 'POST':
@@ -104,15 +106,41 @@ def get_trainer(code):
     :returns: JSON
     """
     # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
-    region = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=code)).scalar_one()
+    trainer = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=code)).scalar_one()
 
     # Dump the data using the Marshmallow region schema; .dump() returns JSON
-    result = Trainer_Schema.dump(region)
+    result = Trainer_Schema.dump(trainer)
 
     # Return the data in the HTTP response
     return result
 
+@app.get('/player/<code>')
+def get_player(code):
+    """Returns the json file of the player with certain ID
+    :param code: The ID  of the player
+    :param type code: str
+    :returns: JSON
+    """
+    # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
+    player = db.session.execute(db.select(Player).filter_by(Player_ID=code)).scalar_one()
+    # Dump the data using the Marshmallow region schema; .dump() returns JSON
+    result = Player_Schema.dump(player)
+    # Return the data in the HTTP response
+    return result
 
+@app.get('/player_t/<code>')
+def get_player_through_trainer_ID(code):
+    """Returns the json file of the players with certain trainer
+    :param code: The ID  of the trainer responsible for the player
+    :param type code: str
+    :returns: JSON
+    """
+    # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
+    player = db.session.execute(db.select(Player).filter_by(Trainer_ID=code)).scalar_one()
+    # Dump the data using the Marshmallow region schema; .dump() returns JSON
+    result = Player_Schema.dump(player)
+    # Return the data in the HTTP response
+    return result
 # Run the app
 if __name__ == '__main__':
     app.run(debug=True)
