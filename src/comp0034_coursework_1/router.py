@@ -1,6 +1,6 @@
 # Import the Flask class from the Flask library
 # python -m src.comp0034_coursework_1.router
-from flask import Flask ,request ,redirect , url_for, render_template,flash
+from flask import Flask ,request ,redirect , url_for, render_template,flash ,abort
 from .import create_app
 from .import db
 from .models import Trainer,Player,Data
@@ -26,27 +26,36 @@ def homepage():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        Player_ID = request.form['Player_ID']
-        Trainer_ID = request.form['Trainer_ID']
+        player_id = request.form['Player_ID']
+        trainer_id = request.form['Trainer_ID']
         password = request.form['password']
         role = request.form['role']
 
-        # 以下是将数据写入数据库的伪代码
         if role == 'player':
+            # 检查Player是否已存在
+            existing_user = Player.query.filter_by(Player_ID=player_id).first()
+            if existing_user:
+                # 如果用户已存在，返回404或其他合适的错误处理
+                abort(404, description="Player already exists.")
             # 创建Player实例并写入数据库
-            new_user = Player(Trainer_ID=Trainer_ID, Player_ID=Player_ID, password=password)
+            new_user = Player(Player_ID=player_id, password=password, Trainer_ID=trainer_id)
             db.session.add(new_user)
-        elif role == 'train':
+        elif role == 'trainer':
+            # 检查Trainer是否已存在
+            existing_user = Trainer.query.filter_by(Trainer_ID=trainer_id).first()
+            if existing_user:
+                # 如果用户已存在，返回404或其他合适的错误处理
+                abort(404, description="Trainer already exists.")
             # 创建Trainer实例并写入数据库
-            new_user = Trainer(Trainer_ID=Trainer_ID, Player_ID=Player_ID, password=password)
+            new_user = Trainer(Trainer_ID=trainer_id, password=password)
             db.session.add(new_user)
         else:
             flash('Please select a valid role', 'error')
             return render_template('register.html')
 
-        db.session.commit()
-        flash('Registration successful', 'success')
-        return redirect(url_for('login'))  # 或其他页面
+        db.session.commit()  # 提交数据库更改
+        # 成功注册后的逻辑
+        return redirect(url_for('login'))
 
     return render_template('register.html')
 
