@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+</head>
+<body>
+    <h1>Login</h1>
+    {% for message in get_flashed_messages(category_filter=["error", "success"]) %}
+        <div>{{ message }}</div>
+    {% endfor %}
+    <form method="POST" action="{{ url_for('login') }}">
+        <label for="role">Role:</label>
+        <select name="role" id="role" required>
+            <option value="">Select Role</option>
+            <option value="player">Player</option>
+            <option value="trainer">Trainer</option>
+        </select>
+        <div id="user_id_field">
+            <label for="user_id">ID:</label>
+            <input type="text" name="user_id" id="user_id" placeholder="Your ID" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Password" required>
+        </div>
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        // 你可以加入一些JavaScript来动态显示/隐藏Player_ID或Trainer_ID字段
+        // 根据角色选择，这里只是一个简单的示例，不包含JavaScript
+    </script>
+</body>
+</html>

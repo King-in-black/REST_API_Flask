@@ -1,6 +1,6 @@
-from __init__ import ma
-from __init__ import db
-from models import Trainer,Player,Data
+from .import ma
+from .import db
+from .models import Trainer,Player,Data
 class Data_Schema(ma.SQLAlchemySchema):
     class Meta:
         model = Data
@@ -32,8 +32,6 @@ class Trainer_Schema(ma.SQLAlchemySchema):
 
     Trainer_ID = ma.auto_field()
     password = ma.auto_field()
-    Player_ID = ma.auto_field()
-    Data_ID = ma.auto_field()
 class Player_Schema(ma.SQLAlchemySchema):
     class Meta:
         model = Player
@@ -43,5 +41,4 @@ class Player_Schema(ma.SQLAlchemySchema):
 
     Player_ID = ma.auto_field()
     password = ma.auto_field()
-    Data_ID = ma.auto_field()
     Trainer_ID = ma.auto_field()

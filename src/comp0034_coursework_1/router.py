@@ -4,12 +4,14 @@ from flask import Flask ,request ,redirect , url_for, render_template,flash ,abo
 from .import create_app
 from .import db
 from .models import Trainer,Player,Data
+from.schemas import Trainer_Schema,Data_Schema,Player_Schema
 # Create an instance of a Flask application
 # The first argument is the name of the application’s module or package. __name__ is a convenient shortcut.
 # This is needed so that Flask knows where to look for resources such as templates and static files.
 # Add a route for the 'home' page
 # use the route() decorator to tell Flask what URL should trigger our function.
 app = create_app()
+
 @app.route('/homepage', methods=['GET', 'POST'])
 def homepage():
     if request.method == 'POST':
@@ -62,15 +64,54 @@ def register():
 
 @app.route('/login',methods=['GET', 'POST'])
 def login():
-    # The function returns the message we want to display in the user’s browser. The default content type is HTML,
-    # so HTML in the string will be rendered by the browser.
-    return 'Hello World loh!'
+    if request.method == 'POST':
+        # 提取表单数据
+        role = request.form['role']
+        user_id = request.form.get('user_id')
+        password = request.form['password']
 
-@app.route('/predict')
-def predict():
-    # The function returns the message we want to display in the user’s browser. The default content type is HTML,
-    # so HTML in the string will be rendered by the browser.
-    return 'Hello World!'
+        if role == 'player':
+            # 如果是玩家，查询Player表
+            user = Player.query.filter_by(Player_ID=user_id, password=password).first()
+            if user:
+                # 登录成功逻辑
+                flash('Player login successful!', 'success')
+                return redirect(url_for('player_dashboard'))  # 假设有一个玩家仪表板视图
+            else:
+                # 登录失败逻辑
+                flash('Invalid Player ID or password', 'error')
+
+        elif role == 'trainer':
+            # 如果是教练，查询Trainer表
+            user = Trainer.query.filter_by(Trainer_ID=user_id, password=password).first()
+            if user:
+                # 登录成功逻辑
+                flash('Trainer login successful!', 'success')
+                return redirect(url_for('trainer_dashboard'))  # 假设有一个教练仪表板视图
+            else:
+                # 登录失败逻辑
+                flash('Invalid Trainer ID or password', 'error')
+
+    return render_template('login.html')
+
+
+@app.get('/trainer/<code>')
+def get_trainer(code):
+    """Returns the json file of the trainer with certain ID
+
+    :param code: The ID  of the trainer
+    :param type code: str
+    :returns: JSON
+    """
+    # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
+    region = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=code)).scalar_one()
+
+    # Dump the data using the Marshmallow region schema; .dump() returns JSON
+    result = Trainer_Schema.dump(region)
+
+    # Return the data in the HTTP response
+    return result
+
 
 # Run the app
 if __name__ == '__main__':

@@ -45,7 +45,7 @@ def create_app(test_config=None):
     return app
     # ensure the instance folder exists
 
-'''
+
 def add_data_from_csv():
     """Adds data to the database if it does not already exist."""
 
@@ -77,4 +77,3 @@ def add_data_from_csv():
                 db.session.add(e)
             db.session.commit()
 
-'''
