@@ -6,6 +6,8 @@ from .import db
 from .models import Trainer,Player,Data
 from.schemas import Trainer_Schema,Data_Schema,Player_Schema
 import jsonify
+import Path
+import csv
 # Create an instance of a Flask application
 # The first argument is the name of the application’s module or package. __name__ is a convenient shortcut.
 # This is needed so that Flask knows where to look for resources such as templates and static files.
@@ -108,11 +110,8 @@ def get_trainer(code):
     """
     # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
     trainer = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=code)).scalar_one()
-
     # Dump the data using the Marshmallow region schema; .dump() returns JSON
     result = Trainer_Schema.dump(trainer)
-
-    # Return the data in the HTTP response
     return result
 
 @app.get('/player/<code>')
@@ -189,6 +188,14 @@ def delete_player():
     else:
         return jsonify({'error': 'Record of Player not found'}), 404
 
+@app.post('/Database_add/<code>')
+@app.get('/Database_row')
+@app.get('/Database_row')
+@app.post('/Database_add')
+@app.post("/Datarow_add")
+@app.delete("/Datarow_get")
+@app.delete("/Datarow_delete")
+@app.delete("/Dataset_delete")
 # Run the app
 if __name__ == '__main__':
     app.run(debug=True)
