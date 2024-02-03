@@ -5,6 +5,7 @@ from .import create_app
 from .import db
 from .models import Trainer,Player,Data
 from.schemas import Trainer_Schema,Data_Schema,Player_Schema
+import jsonify
 # Create an instance of a Flask application
 # The first argument is the name of the application’s module or package. __name__ is a convenient shortcut.
 # This is needed so that Flask knows where to look for resources such as templates and static files.
@@ -162,21 +163,31 @@ def create_trainer():
     return {"message":f"Trainer added with the trainer_ID={trainer.Trainer_ID}"}
 
 
-@app.delete('/api/delete_trainer')
+@app.delete('/delete_trainer')
 def delete_trainer():
-    # 解析请求体中的JSON
-    data = request.get_json()
-    record_id = data.get('id')  # 假设每行数据都有唯一的ID并通过JSON传递
-
+    trainer_json = request.get_json()
+    trainer = Trainer_Schema.load(trainer_json)
+    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
     # 查找并删除指定的记录
-    record = YourModel.query.get(record_id)
-    if record:
-        db.session.delete(record)
+    if del_obj:
+        db.session.delete(del_obj)
         db.session.commit()
-        return jsonify({'message': 'Record deleted successfully'}), 200
+        return jsonify({'message': 'Record of Trainer deleted  successfully'}), 200
     else:
-        return jsonify({'error': 'Record not found'}), 404
+        return jsonify({'error': 'Record of Trainer not found'}), 404
 
+@app.delete('/delete_player')
+def delete_player():
+    player_json = request.get_json()
+    player = Player_Schema.load(player_json)
+    del_obj = db.session.execute(db.select(Player).filter_by(Player_ID=player.Player_ID)).scalar_one()
+    # 查找并删除指定的记录
+    if del_obj:
+        db.session.delete(del_obj)
+        db.session.commit()
+        return jsonify({'message': 'Record of Player deleted successfully'}), 200
+    else:
+        return jsonify({'error': 'Record of Player not found'}), 404
 
 # Run the app
 if __name__ == '__main__':
