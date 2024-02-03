@@ -11,9 +11,9 @@ from.schemas import Trainer_Schema,Data_Schema,Player_Schema
 # Add a route for the 'home' page
 # use the route() decorator to tell Flask what URL should trigger our function.
 app = create_app()
-Trainer_Schema=Trainer_Schema(many=True)
-Data_Schema=Data_Schema(many=True)
-Player_Schema=Player_Schema(many=True)
+Trainer_Schema=Trainer_Schema()
+Data_Schema=Data_Schema()
+Player_Schema=Player_Schema()
 @app.route('/homepage', methods=['GET', 'POST'])
 def homepage():
     if request.method == 'POST':
@@ -136,11 +136,16 @@ def get_player_through_trainer_ID(code):
     :returns: JSON
     """
     # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
-    player = db.session.execute(db.select(Player).filter_by(Trainer_ID=code)).scalar_one()
-    # Dump the data using the Marshmallow region schema; .dump() returns JSON
-    result = Player_Schema.dump(player)
-    # Return the data in the HTTP response
-    return result
+    List=[]
+    #player = db.session.execute(db.select(Player).filter_by(Trainer_ID=code)).all()
+    a = db.session.execute(db.select(Player).filter_by(Trainer_ID=code))
+    players = a.scalars().all()
+    for i in players:
+        result = Player_Schema.dump(i)
+        List.append(result)
+    return List
+
+@app.get('/player_t/<code>')
 # Run the app
 if __name__ == '__main__':
     app.run(debug=True)
