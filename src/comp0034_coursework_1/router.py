@@ -145,7 +145,39 @@ def get_player_through_trainer_ID(code):
         List.append(result)
     return List
 
-@app.get('/player_t/<code>')
+@app.post('/player_add')
+def create_player():
+    player_json=request.get_json()
+    player= Player_Schema.load(player_json)
+    db.session.add(player)
+    db.session.commit()
+    return {"message":f"Player added with the player_ID={player.Player_ID}"}
+
+@app.post('/trainer_add')
+def create_trainer():
+    trainer_json=request.get_json()
+    trainer= Trainer_Schema.load(trainer_json)
+    db.session.add(trainer)
+    db.session.commit()
+    return {"message":f"Trainer added with the trainer_ID={trainer.Trainer_ID}"}
+
+
+@app.delete('/api/delete_trainer')
+def delete_trainer():
+    # 解析请求体中的JSON
+    data = request.get_json()
+    record_id = data.get('id')  # 假设每行数据都有唯一的ID并通过JSON传递
+
+    # 查找并删除指定的记录
+    record = YourModel.query.get(record_id)
+    if record:
+        db.session.delete(record)
+        db.session.commit()
+        return jsonify({'message': 'Record deleted successfully'}), 200
+    else:
+        return jsonify({'error': 'Record not found'}), 404
+
+
 # Run the app
 if __name__ == '__main__':
     app.run(debug=True)
