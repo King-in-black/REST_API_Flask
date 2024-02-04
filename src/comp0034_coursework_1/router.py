@@ -188,7 +188,7 @@ def delete_player():
         db.session.commit()
         return {'message': 'Record of Player deleted successfully'}
     else:
-        return {'error': 'Record of Player not found'})
+        return {'error': 'Record of Player not found'}
 
 @app.route('/Database_add',methods=['GET', 'POST'])
 def add_data_from_csv():
@@ -236,11 +236,16 @@ def get_data(code):
     # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
     data = db.session.execute(db.select(Data).filter_by(Data_ID=code)).scalar_one()
     # Dump the data using the Marshmallow region schema; .dump() returns JSON
-    result = Player_Schema.dump(data)
+    result = Data_Schema.dump(data)
     # Return the data in the HTTP response
     return result
 @app.get('/Database_get/<code>')
 def get_datarow_through_Database_ID(code):
+    '''
+
+    :param code:
+    :return:
+    '''
     List=[]
     obj = db.session.execute(db.select(Data).filter_by(Dataset_ID=code))
     data = obj.scalars().all()
@@ -249,32 +254,28 @@ def get_datarow_through_Database_ID(code):
         List.append(result)
     return List
 
-@app.delete('/delete_datarow')
-def delete_Datarow():
-    trainer_json = request.get_json()
-    trainer = Trainer_Schema.load(trainer_json)
-    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
+@app.delete('/delete_datarow/<code>')
+def delete_Datarow(code):
+    del_obj = db.session.execute(db.select(Data).filter_by(Data_ID=code)).scalar_one()
     # 查找并删除指定的记录
     if del_obj:
         db.session.delete(del_obj)
         db.session.commit()
-        return {'message': 'Record of Trainer deleted  successfully'}
+        return {'message': 'Record of Data_row deleted successfully'}
     else:
-        return {'error': 'Record of Trainer not found'}
+        return {'error': 'Record of Data_row not found'}
 
-@app.delete('/delete_trainer')
-def delete_trainer():
-    trainer_json = request.get_json()
-    trainer = Trainer_Schema.load(trainer_json)
-    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
-    # 查找并删除指定的记录
-    if del_obj:
-        db.session.delete(del_obj)
+@app.delete('/delete_database/<code>')
+def delete_Database(code):
+    a = db.session.execute(db.select(Data).filter_by(Dataset_ID=code))
+    data = a.scalars().all()
+    if data:
+        for i in data:
+            db.session.delete(i)
         db.session.commit()
-        return {'message': 'Record of Trainer deleted  successfully'}
+        return {'message': 'Record of Database deleted  successfully'}
     else:
-        return {'error': 'Record of Trainer not found'}
-
+        return {'error': 'Record of Database not found'}
 
 # Run the app
 if __name__ == '__main__':
