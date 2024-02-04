@@ -29,7 +29,7 @@ class Player(db.Model):
 
 class Data(db.Model):
     __tablename__ = "data"
-    Data_ID: Mapped[str] = mapped_column(db.String(16), primary_key=True,unique=True,nullable=False)
+    Data_ID: Mapped[str] = mapped_column(db.String(16), primary_key=True,unique=True,nullable=False,autoincrement=True)
     Dataset_ID: Mapped[str] = mapped_column(db.String(16), unique=False, nullable=False)
     Player_ID: Mapped[str] = mapped_column(ForeignKey("player.Player_ID"),nullable=True)
     player = relationship('Player', back_populates="data")

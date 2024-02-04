@@ -176,6 +176,9 @@ def delete_trainer():
 
 @app.delete('/delete_player')
 def delete_player():
+    '''
+    :return:
+    '''
     player_json = request.get_json()
     player = Player_Schema.load(player_json)
     del_obj = db.session.execute(db.select(Player).filter_by(Player_ID=player.Player_ID)).scalar_one()
@@ -212,10 +215,11 @@ def add_data_from_csv():
     db.session.commit()
     return (print('dataset_submitted correctly'))
 
+
+
 """
 @app.get('/Database_row')
 @app.get('/Database_row')
-@app.post('/Database_add')
 @app.post("/Datarow_add")
 @app.delete("/Datarow_get")
 @app.delete("/Datarow_delete")
