@@ -226,8 +226,31 @@ def create_Datarow():
     db.session.commit()
     return {"message":f"Data added with the Data_ID={data.Data_ID} and with the Data_base={data.Dataset_ID}"}
 
-@app.delete('/delete_trainer')
-def delete_trainer():
+@app.get('/Datarow_get/<code>')
+def get_data(code):
+    """Returns the json file of the player with certain ID
+    :param code: The ID  of the player
+    :param type code: str
+    :returns: JSON
+    """
+    # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
+    data = db.session.execute(db.select(Data).filter_by(Data_ID=code)).scalar_one()
+    # Dump the data using the Marshmallow region schema; .dump() returns JSON
+    result = Player_Schema.dump(data)
+    # Return the data in the HTTP response
+    return result
+@app.get('/Database_get/<code>')
+def get_datarow_through_Database_ID(code):
+    List=[]
+    obj = db.session.execute(db.select(Data).filter_by(Dataset_ID=code))
+    data = obj.scalars().all()
+    for i in data:
+        result = Data_Schema.dump(i)
+        List.append(result)
+    return List
+
+@app.delete('/delete_datarow')
+def delete_Datarow():
     trainer_json = request.get_json()
     trainer = Trainer_Schema.load(trainer_json)
     del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
@@ -251,13 +274,8 @@ def delete_trainer():
         return {'message': 'Record of Trainer deleted  successfully'}
     else:
         return {'error': 'Record of Trainer not found'}
-"""
-@app.get('/Database_row')
-@app.get('/Database_row')
-@app.delete("/Datarow_get")
-@app.delete("/Datarow_delete")
-@app.delete("/Dataset_delete")
-"""
+
+
 # Run the app
 if __name__ == '__main__':
     app.run(debug=True)
