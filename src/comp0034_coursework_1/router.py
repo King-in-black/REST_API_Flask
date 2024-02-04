@@ -170,9 +170,9 @@ def delete_trainer():
     if del_obj:
         db.session.delete(del_obj)
         db.session.commit()
-        return jsonify({'message': 'Record of Trainer deleted  successfully'}), 200
+        return {'message': 'Record of Trainer deleted  successfully'}
     else:
-        return jsonify({'error': 'Record of Trainer not found'}), 404
+        return {'error': 'Record of Trainer not found'}
 
 @app.delete('/delete_player')
 def delete_player():
@@ -186,9 +186,9 @@ def delete_player():
     if del_obj:
         db.session.delete(del_obj)
         db.session.commit()
-        return jsonify({'message': 'Record of Player deleted successfully'}), 200
+        return {'message': 'Record of Player deleted successfully'}
     else:
-        return jsonify({'error': 'Record of Player not found'}), 404
+        return {'error': 'Record of Player not found'})
 
 @app.route('/Database_add',methods=['GET', 'POST'])
 def add_data_from_csv():
@@ -198,6 +198,7 @@ def add_data_from_csv():
     """
     dataframe = pd.read_csv("E:\\Programming_Assignments\\comp0034-cw1i-King-in-black\\src\\data\\data.csv")
     dataframe.columns.values[0] = 'Data_ID'
+    dataframe = dataframe.drop(columns='Data_ID')
     print("Start adding IMU data to the database")
     # 先将timestamp列转换为timedelta类型
     dataframe['timestamp'] = pd.to_timedelta('00:' + dataframe['timestamp'].astype(str))
@@ -206,6 +207,8 @@ def add_data_from_csv():
     max_dataset_id =db.session.execute(db.select(db.func.max(Data.Dataset_ID))).scalar()
     if max_dataset_id is None:
         max_dataset_id = 0
+    else:
+        max_dataset_id += 1
     dataframe['Dataset_ID'] = max_dataset_id
     records = dataframe.to_dict(orient='records')
     # converts to the dictionary
@@ -213,14 +216,44 @@ def add_data_from_csv():
         data_row = Data(**datarow)  # 使用字典解包创建Data实例
         db.session.add(data_row)
     db.session.commit()
-    return (print('dataset_submitted correctly'))
+    return {"message":f"Dataset added with the Dataset_ID={max_dataset_id}"}
 
+@app.route('/Datarow_add',methods=['GET', 'POST'])
+def create_Datarow():
+    data_json=request.get_json()
+    data= Data_Schema.load(data_json)
+    db.session.add(data)
+    db.session.commit()
+    return {"message":f"Data added with the Data_ID={data.Data_ID} and with the Data_base={data.Dataset_ID}"}
 
+@app.delete('/delete_trainer')
+def delete_trainer():
+    trainer_json = request.get_json()
+    trainer = Trainer_Schema.load(trainer_json)
+    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
+    # 查找并删除指定的记录
+    if del_obj:
+        db.session.delete(del_obj)
+        db.session.commit()
+        return {'message': 'Record of Trainer deleted  successfully'}
+    else:
+        return {'error': 'Record of Trainer not found'}
 
+@app.delete('/delete_trainer')
+def delete_trainer():
+    trainer_json = request.get_json()
+    trainer = Trainer_Schema.load(trainer_json)
+    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
+    # 查找并删除指定的记录
+    if del_obj:
+        db.session.delete(del_obj)
+        db.session.commit()
+        return {'message': 'Record of Trainer deleted  successfully'}
+    else:
+        return {'error': 'Record of Trainer not found'}
 """
 @app.get('/Database_row')
 @app.get('/Database_row')
-@app.post("/Datarow_add")
 @app.delete("/Datarow_get")
 @app.delete("/Datarow_delete")
 @app.delete("/Dataset_delete")
