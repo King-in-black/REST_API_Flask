@@ -11,7 +11,7 @@ class Data_Schema(ma.SQLAlchemySchema):
     Data_ID = ma.auto_field()
     Player_ID = ma.auto_field()
     Trainer_ID = ma.auto_field()
-    Timestamp = ma.auto_field()
+    timestamp = ma.auto_field()
     accX = ma.auto_field()
     accY = ma.auto_field()
     accZ = ma.auto_field()

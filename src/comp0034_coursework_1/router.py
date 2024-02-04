@@ -6,8 +6,7 @@ from .import db
 from .models import Trainer,Player,Data
 from.schemas import Trainer_Schema,Data_Schema,Player_Schema
 import jsonify
-import Path
-import csv
+import pandas as pd
 # Create an instance of a Flask application
 # The first argument is the name of the application’s module or package. __name__ is a convenient shortcut.
 # This is needed so that Flask knows where to look for resources such as templates and static files.
@@ -188,7 +187,23 @@ def delete_player():
     else:
         return jsonify({'error': 'Record of Player not found'}), 404
 
-@app.post('/Database_add/<code>')
+@app.route('/Database_add',methods=['GET', 'POST'])
+def add_data_from_csv():
+    """Adds data to the database if it does not already exist."""
+    dataframe = pd.read_csv("E:\Programming_Assignments\comp0034-cw1i-King-in-black\src\data\data.csv")
+    dataframe.columns.values[0] = 'Data_ID'
+    print("Start adding IMU data to the database")
+    records = dataframe.to_dict(orient='records')
+    # converts to the dictionary
+    for datarow in records:
+        data_row = Data(**datarow)  # 使用字典解包创建Trainer实例
+        db.session.add(data_row)
+    db.session.commit()
+@app.route('/')
+
+
+
+"""
 @app.get('/Database_row')
 @app.get('/Database_row')
 @app.post('/Database_add')
@@ -196,6 +211,7 @@ def delete_player():
 @app.delete("/Datarow_get")
 @app.delete("/Datarow_delete")
 @app.delete("/Dataset_delete")
+"""
 # Run the app
 if __name__ == '__main__':
     app.run(debug=True)

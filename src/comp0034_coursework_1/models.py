@@ -30,11 +30,12 @@ class Player(db.Model):
 class Data(db.Model):
     __tablename__ = "data"
     Data_ID: Mapped[str] = mapped_column(db.String(16), primary_key=True,unique=True,nullable=False)
+    Dataset_ID: Mapped[str] = mapped_column(db.String(16), unique=True, nullable=False)
     Player_ID: Mapped[str] = mapped_column(ForeignKey("player.Player_ID"),nullable=True)
     player = relationship('Player', back_populates="data")
     Trainer_ID: Mapped[str] = mapped_column(ForeignKey("trainer.Trainer_ID"),nullable=True)
     trainer = relationship('Trainer', back_populates="data")
-    Timestamp: Mapped[datetime] = mapped_column(db.DateTime,nullable=True)
+    timestamp: Mapped[datetime] = mapped_column(db.DateTime,nullable=True)
     accX: Mapped[float] = mapped_column(db.Float(32),nullable=True)
     accY: Mapped[float] = mapped_column(db.Float(32),nullable=True)
     accZ: Mapped[float] = mapped_column(db.Float(32),nullable=True)
