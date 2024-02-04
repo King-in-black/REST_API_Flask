@@ -35,7 +35,7 @@ class Data(db.Model):
     player = relationship('Player', back_populates="data")
     Trainer_ID: Mapped[str] = mapped_column(ForeignKey("trainer.Trainer_ID"),nullable=True)
     trainer = relationship('Trainer', back_populates="data")
-    timestamp: Mapped[datetime] = mapped_column(db.DateTime,nullable=True)
+    timestamp: Mapped[float] = mapped_column(db.Float(32),nullable=True)
     accX: Mapped[float] = mapped_column(db.Float(32),nullable=True)
     accY: Mapped[float] = mapped_column(db.Float(32),nullable=True)
     accZ: Mapped[float] = mapped_column(db.Float(32),nullable=True)

@@ -190,16 +190,25 @@ def delete_player():
 @app.route('/Database_add',methods=['GET', 'POST'])
 def add_data_from_csv():
     """Adds data to the database if it does not already exist."""
-    dataframe = pd.read_csv("E:\Programming_Assignments\comp0034-cw1i-King-in-black\src\data\data.csv")
+    dataframe = pd.read_csv("E:\\Programming_Assignments\\comp0034-cw1i-King-in-black\\src\\data\\data.csv")
     dataframe.columns.values[0] = 'Data_ID'
     print("Start adding IMU data to the database")
+    # 先将timestamp列转换为timedelta类型
+
+    dataframe['timestamp'] = pd.to_timedelta('00:' + dataframe['timestamp'].astype(str))
+    # 然后将timedelta转换为总秒数的浮点数
+    dataframe['timestamp'] = dataframe['timestamp'].dt.total_seconds()
+    print(dataframe.info())
+    print(dataframe.head())
     records = dataframe.to_dict(orient='records')
     # converts to the dictionary
+
     for datarow in records:
-        data_row = Data(**datarow)  # 使用字典解包创建Trainer实例
+        data_row = Data(**datarow)  # 使用字典解包创建Data实例
         db.session.add(data_row)
     db.session.commit()
-@app.route('/')
+
+#@app.route('/')
 
 
 
