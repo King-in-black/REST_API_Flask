@@ -202,7 +202,6 @@ def add_data_from_csv():
     print(dataframe.head())
     records = dataframe.to_dict(orient='records')
     # converts to the dictionary
-
     for datarow in records:
         data_row = Data(**datarow)  # 使用字典解包创建Data实例
         db.session.add(data_row)
