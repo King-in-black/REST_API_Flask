@@ -8,22 +8,26 @@ from.schemas import Trainer_Schema,Data_Schema,Player_Schema
 import jsonify
 import pandas as pd
 # Create an instance of a Flask application
-# The first argument is the name of the application’s module or package. __name__ is a convenient shortcut.
-# This is needed so that Flask knows where to look for resources such as templates and static files.
-# Add a route for the 'home' page
-# use the route() decorator to tell Flask what URL should trigger our function.
+#import all the necessary functions to call the instance of schema and flasks
 app = create_app()
 Trainer_Schema=Trainer_Schema()
 Data_Schema=Data_Schema()
 Player_Schema=Player_Schema()
 @app.route('/homepage', methods=['GET', 'POST'])
+# a homepage for the webapp
 def homepage():
+    '''
+    when the user starts, they would like to starts from here to choose whether to login or register
+    :return: the html which responsible for the homepage
+    '''
     if request.method == 'POST':
         action = request.form.get('action')
         # according to the value of action, the page will redirect to another page.
         if action == 'login':
+            # if the use types the button for login; they will jump to login page
             return redirect(url_for('login'))
         elif action == 'register':
+            # or they will jump to register page
             return redirect(url_for('register'))
         else:
             return 'Invalid action', 400
@@ -31,6 +35,12 @@ def homepage():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    '''
+    allow people to register account in player identification or a trainer identification
+    :return:
+    if the user registers successfully, the user will jump into the login page;
+    or they will return a 404 error
+    '''
     if request.method == 'POST':
         player_id = request.form['Player_ID']
         trainer_id = request.form['Trainer_ID']
@@ -38,29 +48,29 @@ def register():
         role = request.form['role']
 
         if role == 'player':
-            # 检查Player是否已存在
+            # the db will be asked to check whether there is a player ID
             existing_user = Player.query.filter_by(Player_ID=player_id).first()
             if existing_user:
-                # 如果用户已存在，返回404或其他合适的错误处理
+            # if the player exists, the 404 error will return
                 abort(404, description="Player already exists.")
-            # 创建Player实例并写入数据库
+            # or a Player instance will be asked to create in the database
             new_user = Player(Player_ID=player_id, password=password, Trainer_ID=trainer_id)
             db.session.add(new_user)
         elif role == 'trainer':
-            # 检查Trainer是否已存在
+            # Check whether there is a player exists or not
             existing_user = Trainer.query.filter_by(Trainer_ID=trainer_id).first()
             if existing_user:
-                # 如果用户已存在，返回404或其他合适的错误处理
+            # if the trainer exists, the 404 error will return
                 abort(404, description="Trainer already exists.")
-            # 创建Trainer实例并写入数据库
+            # or a Trainer instance will be asked to create in the database
             new_user = Trainer(Trainer_ID=trainer_id, password=password)
             db.session.add(new_user)
         else:
             flash('Please select a valid role', 'error')
             return render_template('register.html')
 
-        db.session.commit()  # 提交数据库更改
-        # 成功注册后的逻辑
+        db.session.commit()  # submit the changes in the database
+        # jump to login page if a user register successfully
         return redirect(url_for('login'))
 
     return render_template('register.html')
@@ -68,32 +78,39 @@ def register():
 
 @app.route('/login',methods=['GET', 'POST'])
 def login():
+    '''
+    the login page allows users to check records of existing players and trainers.
+    if the password and ID are correct, they could access the following applications
+    :returns: the following pages have not completed.
+    '''
     if request.method == 'POST':
-        # 提取表单数据
+        # extract the information of the players or the trainers
         role = request.form['role']
         user_id = request.form.get('user_id')
         password = request.form['password']
 
         if role == 'player':
-            # 如果是玩家，查询Player表
+            # if the user is player, the database will be asked for certain records of the player
+            # if the password and the ID of the form requested match with records in the database
+            # login page passed
             user = Player.query.filter_by(Player_ID=user_id, password=password).first()
             if user:
-                # 登录成功逻辑
+                # when the player login successfully, the following steps will be inplemented
                 flash('Player login successful!', 'success')
-                return redirect(url_for('player_dashboard'))  # 假设有一个玩家仪表板视图
+                return redirect(url_for('player_dashboard'))  # incomplete player page for prediction the result
             else:
-                # 登录失败逻辑
+                # when there is a failure, the following styles will be implemented
                 flash('Invalid Player ID or password', 'error')
 
         elif role == 'trainer':
-            # 如果是教练，查询Trainer表
+            # when the trainer login successfully, the following steps will be inplemented
             user = Trainer.query.filter_by(Trainer_ID=user_id, password=password).first()
             if user:
-                # 登录成功逻辑
+                # when the trainer login successfully, the following steps will be inplemented
                 flash('Trainer login successful!', 'success')
-                return redirect(url_for('trainer_dashboard'))  # 假设有一个教练仪表板视图
+                return redirect(url_for('trainer_dashboard'))  # incomplete trainer page for upload the results
             else:
-                # 登录失败逻辑
+                # when there is a failure, the following styles will be implemented
                 flash('Invalid Trainer ID or password', 'error')
 
     return render_template('login.html')
@@ -101,42 +118,43 @@ def login():
 
 @app.get('/trainer/<code>')
 def get_trainer(code):
-    """Returns the json file of the trainer with certain ID
-
-    :param code: The ID  of the trainer
-    :param type code: str
-    :returns: JSON
     """
-    # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
+    The database will be requested to provide the information of the trainer with certain trainer ID
+    return the json file of the trainer with certain ID.
+    :param code: The ID  of the trainer
+    :returns: the JSON format of the trainer with the certain ID
+    """
+
     trainer = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=code)).scalar_one()
-    # Dump the data using the Marshmallow region schema; .dump() returns JSON
     result = Trainer_Schema.dump(trainer)
     return result
 
 @app.get('/player/<code>')
 def get_player(code):
-    """Returns the json file of the player with certain ID
-    :param code: The ID  of the player
-    :param type code: str
-    :returns: JSON
     """
-    # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
+
+    The database will be requested to provide the information of the player with certain player ID
+    return the json file of the player with certain ID.
+    :param code: The ID  of the player
+    :returns: the JSON format of the player with the certain ID
+
+    """
     player = db.session.execute(db.select(Player).filter_by(Player_ID=code)).scalar_one()
-    # Dump the data using the Marshmallow region schema; .dump() returns JSON
     result = Player_Schema.dump(player)
-    # Return the data in the HTTP response
     return result
 
 @app.get('/player_t/<code>')
 def get_player_through_trainer_ID(code):
-    """Returns the json file of the players with certain trainer
-    :param code: The ID  of the trainer responsible for the player
-    :param type code: str
-    :returns: JSON
     """
-    # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
+
+    The database will be requested to provide the information of the player with certain trainer ID (foreign keys)
+    return the json file of the player with certain trainer ID.
+    :param code: The ID  of the trainer connecting with players
+    :returns: the all JSONs  of the player with the certain ID
+
+    """
+
     List=[]
-    #player = db.session.execute(db.select(Player).filter_by(Trainer_ID=code)).all()
     a = db.session.execute(db.select(Player).filter_by(Trainer_ID=code))
     players = a.scalars().all()
     for i in players:
@@ -146,6 +164,13 @@ def get_player_through_trainer_ID(code):
 
 @app.post('/player_add')
 def create_player():
+    '''
+
+    The database will be requested to add the information of the player(ID and password)
+     with the json file
+    :return: the message of the player with certain player_ID is added successfully.
+
+    '''
     player_json=request.get_json()
     player= Player_Schema.load(player_json)
     db.session.add(player)
@@ -154,6 +179,11 @@ def create_player():
 
 @app.post('/trainer_add')
 def create_trainer():
+    '''
+        The database will be requested to add the information of the player(ID and password)
+         with the json file
+        :return: the message of the player with certain player_ID is added successfully.
+    '''
     trainer_json=request.get_json()
     trainer= Trainer_Schema.load(trainer_json)
     db.session.add(trainer)
@@ -166,11 +196,10 @@ def delete_trainer():
     trainer_json = request.get_json()
     trainer = Trainer_Schema.load(trainer_json)
     del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
-    # 查找并删除指定的记录
     if del_obj:
         db.session.delete(del_obj)
         db.session.commit()
-        return {'message': 'Record of Trainer deleted  successfully'}
+        return {'message':'Record of Trainer deleted  successfully'}
     else:
         return {'error': 'Record of Trainer not found'}
 
