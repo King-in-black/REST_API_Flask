@@ -93,7 +93,7 @@ def login():
             # if the user is player, the database will be asked for certain records of the player
             # if the password and the ID of the form requested match with records in the database
             # login page passed
-            user = Player.query.filter_by(Player_ID=user_id, password=password).first()
+            user = Player.query.filter_by(Player_ID=user_id, password=password).scalarone()
             if user:
                 # when the player login successfully, the following steps will be inplemented
                 flash('Player login successful!', 'success')
@@ -104,7 +104,7 @@ def login():
 
         elif role == 'trainer':
             # when the trainer login successfully, the following steps will be inplemented
-            user = Trainer.query.filter_by(Trainer_ID=user_id, password=password).first()
+            user = Trainer.query.filter_by(Trainer_ID=user_id, password=password).scalarone()
             if user:
                 # when the trainer login successfully, the following steps will be inplemented
                 flash('Trainer login successful!', 'success')
@@ -196,29 +196,35 @@ def create_trainer():
 @app.delete('/delete_player')
 def delete_player():
     '''
-    :return:
+
+     The database will be requested to delete the information of the player(ID and password) with the json file.
+     After getting the request, the database will check whether the record fits. Then the player will  delete if correct
+     password and player ID has been input.
+
     '''
     player_json = request.get_json()
     player = Player_Schema.load(player_json)
-    del_obj = db.session.execute(db.select(Player).filter_by(Player_ID=player.Player_ID)).scalar_one()
-    # 查找并删除指定的记录
+    del_obj = db.session.execute(db.select(Player).filter_by(Player_ID=player.Player_ID, password=player.password)).scalar_one()
+    # delete the certain record
     if del_obj:
         db.session.delete(del_obj)
         db.session.commit()
-        return {'message': 'Record of Player deleted successfully'}
+        return {'message': f'Record of Player  {player.Player_ID} deleted successfully'}
     else:
         return {'error': 'Record of Player not found'}
 
 @app.delete('/delete_trainer')
 def delete_trainer():
     '''
-    The database will be requested to delete the information of the player(ID and password)
-    with the json file of the certain trainer
-        :return: the message of the player with certain trainer_ID is added successfully.
+
+    The database will be requested to delete the information of the trainer(ID and password) with the json file.
+    After getting the request, the database will check whether the record fits. Then the trainer will  delete if correct
+    password and trainer ID has been matched
+
     '''
     trainer_json = request.get_json()
     trainer = Trainer_Schema.load(trainer_json)
-    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
+    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID, password=trainer.password)).scalar_one()
     if del_obj:
         db.session.delete(del_obj)
         db.session.commit()
@@ -230,18 +236,21 @@ def delete_trainer():
 @app.route('/Database_add',methods=['GET', 'POST'])
 def add_data_from_csv():
     """
-    Adds data to the database if it does not already exist.
+    Adds data to the database through the csv file. A unique dataset_ID will be allocated to every csv file.
+    Every data row's Data_ID will increase automatically.
 
     """
+    # the csv locates in the data file
     dataframe = pd.read_csv("E:\\Programming_Assignments\\comp0034-cw1i-King-in-black\\src\\data\\data.csv")
-    dataframe.columns.values[0] = 'Data_ID'
-    dataframe = dataframe.drop(columns='Data_ID')
+    dataframe = dataframe.drop(dataframe.columns.values[0])
+    # drop the original index.
     print("Start adding IMU data to the database")
-    # 先将timestamp列转换为timedelta类型
+    # convert the timestamp to the format that database can understand
     dataframe['timestamp'] = pd.to_timedelta('00:' + dataframe['timestamp'].astype(str))
-    # 然后将timedelta转换为总秒数的浮点数
+    # convert to total second number in float type
     dataframe['timestamp'] = dataframe['timestamp'].dt.total_seconds()
-    max_dataset_id =db.session.execute(db.select(db.func.max(Data.Dataset_ID))).scalar()
+    # check the maximum dataset_ID.
+    max_dataset_id = db.session.execute(db.select(db.func.max(Data.Dataset_ID))).scalar()
     if max_dataset_id is None:
         max_dataset_id = 0
     else:
@@ -250,38 +259,38 @@ def add_data_from_csv():
     records = dataframe.to_dict(orient='records')
     # converts to the dictionary
     for datarow in records:
-        data_row = Data(**datarow)  # 使用字典解包创建Data实例
+        data_row = Data(**datarow)  # Create data instance through the dictionary.
         db.session.add(data_row)
     db.session.commit()
     return {"message":f"Dataset added with the Dataset_ID={max_dataset_id}"}
 
 @app.route('/Datarow_add',methods=['GET', 'POST'])
 def create_Datarow():
-    data_json=request.get_json()
-    data= Data_Schema.load(data_json)
+    '''
+    add a data row with a json file with certain content.
+    '''
+    data_json = request.get_json()
+    data = Data_Schema.load(data_json)
     db.session.add(data)
     db.session.commit()
     return {"message":f"Data added with the Data_ID={data.Data_ID} and with the Data_base={data.Dataset_ID}"}
 
 @app.get('/Datarow_get/<code>')
 def get_data(code):
-    """Returns the json file of the player with certain ID
-    :param code: The ID  of the player
-    :param type code: str
-    :returns: JSON
+    """Returns the json file of the data row with certain ID of data
+    :param code: The ID  of the data row
+    :returns: json format of certain data row
     """
-    # Query structure shown at https://flask-sqlalchemy.palletsprojects.com/en/3.1.x/queries/#select
     data = db.session.execute(db.select(Data).filter_by(Data_ID=code)).scalar_one()
-    # Dump the data using the Marshmallow region schema; .dump() returns JSON
+    # raise an error if multiple records are found
     result = Data_Schema.dump(data)
-    # Return the data in the HTTP response
     return result
 @app.get('/Database_get/<code>')
 def get_datarow_through_Database_ID(code):
     '''
-
-    :param code:
-    :return:
+    Returns all the json files from same csv file with certain Dataset_ID.
+    :param code: the dataset_ID of the dataset want to check
+    :return: a list of the json files with same Dataset_ID
     '''
     List=[]
     obj = db.session.execute(db.select(Data).filter_by(Dataset_ID=code))
@@ -293,8 +302,13 @@ def get_datarow_through_Database_ID(code):
 
 @app.delete('/delete_datarow/<code>')
 def delete_Datarow(code):
+    '''
+    The database will be requested to delete the information of the Data row with the data_ID.
+    After getting the request, the database will check whether the record fits. Then the data row will  delete if there is
+    the Data_ID
+    :param code: the data_ID that user want to delete
+    '''
     del_obj = db.session.execute(db.select(Data).filter_by(Data_ID=code)).scalar_one()
-    # 查找并删除指定的记录
     if del_obj:
         db.session.delete(del_obj)
         db.session.commit()
@@ -302,8 +316,15 @@ def delete_Datarow(code):
     else:
         return {'error': 'Record of Data_row not found'}
 
+
 @app.delete('/delete_database/<code>')
 def delete_Database(code):
+    '''
+        The database will be requested to delete the information of the Dataset with the dataset_ID.
+        After getting the request, the database will check whether the record fits. Then the dataset will delete if there is
+        the matched dataset_ID
+        :param code: the dataset_ID that user want to delete
+    '''
     a = db.session.execute(db.select(Data).filter_by(Dataset_ID=code))
     data = a.scalars().all()
     if data:
