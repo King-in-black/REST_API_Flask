@@ -180,9 +180,11 @@ def create_player():
 @app.post('/trainer_add')
 def create_trainer():
     '''
-        The database will be requested to add the information of the player(ID and password)
+
+        The database will be requested to add the information of the trainer(ID and password)
          with the json file
-        :return: the message of the player with certain player_ID is added successfully.
+        :return: the message of the trainer with certain trainer_ID is added successfully.
+
     '''
     trainer_json=request.get_json()
     trainer= Trainer_Schema.load(trainer_json)
@@ -190,18 +192,6 @@ def create_trainer():
     db.session.commit()
     return {"message":f"Trainer added with the trainer_ID={trainer.Trainer_ID}"}
 
-
-@app.delete('/delete_trainer')
-def delete_trainer():
-    trainer_json = request.get_json()
-    trainer = Trainer_Schema.load(trainer_json)
-    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
-    if del_obj:
-        db.session.delete(del_obj)
-        db.session.commit()
-        return {'message':'Record of Trainer deleted  successfully'}
-    else:
-        return {'error': 'Record of Trainer not found'}
 
 @app.delete('/delete_player')
 def delete_player():
@@ -218,6 +208,24 @@ def delete_player():
         return {'message': 'Record of Player deleted successfully'}
     else:
         return {'error': 'Record of Player not found'}
+
+@app.delete('/delete_trainer')
+def delete_trainer():
+    '''
+    The database will be requested to delete the information of the player(ID and password)
+    with the json file of the certain trainer
+        :return: the message of the player with certain trainer_ID is added successfully.
+    '''
+    trainer_json = request.get_json()
+    trainer = Trainer_Schema.load(trainer_json)
+    del_obj = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()
+    if del_obj:
+        db.session.delete(del_obj)
+        db.session.commit()
+        return {'message':'Record of Trainer deleted  successfully'}
+    else:
+        return {'error': 'Record of Trainer not found'}
+
 
 @app.route('/Database_add',methods=['GET', 'POST'])
 def add_data_from_csv():
