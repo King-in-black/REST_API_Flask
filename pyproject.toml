@@ -1,16 +1,20 @@
 [project]
 name = "comp0034_coursework_1"
-version = "0.0.1"
-readme = "README.md"
-requires-python = ">=3.8"
-dependencies = [
-    "pandas",
-    "pytest",
-    "flask",
-]
+version = "1.0.0"
 
 [build-system]
-#requires = ["hatchling"]
-#build-backend = "hatchling.build
-requires = ["setuptools"]
+requires = ["setuptools", "wheel", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["comp0034_coursework_1*"]
+exclude = ["*/tests*"]
+namespaces = false
+
+[tool.pytest.ini_options]
+testpaths = ["src/comp0034_coursework_1/tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["src/comp0034_coursework_1"]

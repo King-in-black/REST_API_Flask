@@ -298,7 +298,10 @@ def get_datarow_through_Database_ID(code):
     for i in data:
         result = Data_Schema.dump(i)
         List.append(result)
-    return List
+    if not List:
+        return {'message':f'no datarow uploaded with the Dataset_ID{code}'}
+    else:
+        return List
 
 @app.delete('/delete_datarow/<code>')
 def delete_Datarow(code):
@@ -333,8 +336,44 @@ def delete_Database(code):
         db.session.commit()
         return {'message': 'Record of Database deleted  successfully'}
     else:
-        return {'error': 'Record of Database not found'}
+        return {'error': 'Record of Data_base not found'}
 
-# Run the app
+@app.route('/datarow/<code1>/player/<code2>',methods=["GET","POST"])
+def row_relationship_addition_player(code1,code2):
+    '''
+    The database add relationship between datarow and player
+    :param code1: the data_ID of the data row
+    :param code2: the player_ID of player account
+    :return:
+    '''
+    data_row = db.session.execute(db.select(Data).filter_by(Data_ID=code1)).scalar_one()
+    player = db.session.execute(db.select(Player).filter_by(Player_ID=code2)).scalar_one()
+    if not data_row.player:
+       data_row.player = player
+       db.session.commit()
+       return {'message': f'Records between data_row {data_row.Data_ID} and player{player.Player_ID} are connected'}
+    else:
+       return{'error':f'The relationship has already exist between data_row {data_row.Data_ID} and player{data_row.Player_ID}'}
+
+@app.route('/datarow/<code1>/trainer/<code2>',methods=["GET","POST"])
+def row_relationship_addition_trainer(code1,code2):
+    '''
+
+    The database add relationship between datarow and trainer
+    :param code1: the data_ID of the data row
+    :param code2: the Trainer_ID of trainer account
+    :return: messages of success
+
+    '''
+    data_row = db.session.execute(db.select(Data).filter_by(Data_ID=code1)).scalar_one()
+    trainer = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=code2)).scalar_one()
+    if not data_row.trainer:
+       data_row.trainer = trainer
+       db.session.commit()
+       return {'message': f'Records between data_row {data_row.Data_ID} and trainer{trainer.Trainer_ID} has already been connected'}
+    else:
+       return{'error':f'The relationship has already exist between data_row {data_row.Data_ID} and trainer{data_row.Trainer_ID}'}
+
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -23,6 +23,7 @@ class Data_Schema(ma.SQLAlchemySchema):
     Resultant_Gyro=ma.auto_field()
     Average_Speed=ma.auto_field()
     Average_rotational_speed =ma.auto_field()
+
 class Trainer_Schema(ma.SQLAlchemySchema):
     class Meta:
         model = Trainer
@@ -32,6 +33,7 @@ class Trainer_Schema(ma.SQLAlchemySchema):
 
     Trainer_ID = ma.auto_field()
     password = ma.auto_field()
+
 class Player_Schema(ma.SQLAlchemySchema):
     class Meta:
         model = Player
