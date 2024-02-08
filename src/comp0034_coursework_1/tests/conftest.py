@@ -71,6 +71,7 @@ def player_json_a():
         'password' : '********',
         'Trainer_ID': 'a'
     }
+    return player_json_1
 @pytest.fixture(scope='module')
 def player_json_b():
     '''
@@ -81,6 +82,7 @@ def player_json_b():
         'password' : '********',
         'Trainer_ID': 'b'
     }
+    return player_json_2
 @pytest.fixture(scope='module')
 def player_json_c():
     '''
@@ -101,12 +103,14 @@ def trainer_json_a():
         'Trainer_ID': 'a',
         'password': '********'
     }
+    return trainer_json_1
 @pytest.fixture(scope='module')
 def trainer_json_b():
     '''
                define the trainer_json_b,for the following tests
     '''
-    train_json_2 = {
+    trainer_json_2 = {
         'Trainer_ID': 'b',
         'password' : '********'
     }
+    return trainer_json_2
