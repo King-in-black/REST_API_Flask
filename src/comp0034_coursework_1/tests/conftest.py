@@ -4,10 +4,16 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import pytest
 import tempfile
-db = SQLAlchemy()
-ma = Marshmallow()
 @pytest.fixture(scope='session')
-def test_create_app(test_config=None):
+def db(test_config=None):
+    db = SQLAlchemy()
+    return db
+@pytest.fixture(scope='session')
+def ma(test_config=None):
+    ma = Marshmallow()
+    return ma
+@pytest.fixture(scope='session')
+def app(test_config=None):
     '''
     create test app and prevent the test_data contaminating the exsiting database
     :return: the test_app
@@ -60,7 +66,7 @@ def client(app):
     with app.test_client() as testing_client:
         with app.app_context():
             yield testing_client
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 
 def player_json_a():
     '''
@@ -72,7 +78,7 @@ def player_json_a():
         'Trainer_ID': 'a'
     }
     return player_json_1
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def player_json_b():
     '''
        define the player_json_b,for the following tests
@@ -83,7 +89,7 @@ def player_json_b():
         'Trainer_ID': 'b'
     }
     return player_json_2
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def player_json_c():
     '''
           define the player_json_c,for the following tests
@@ -94,7 +100,7 @@ def player_json_c():
         'Trainer_ID': 'a'
     }
     return player_json_3
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def trainer_json_a():
     '''
              define the trainer_json_a,for the following tests
@@ -104,7 +110,7 @@ def trainer_json_a():
         'password': '********'
     }
     return trainer_json_1
-@pytest.fixture(scope='module')
+@pytest.fixture(scope='session')
 def trainer_json_b():
     '''
                define the trainer_json_b,for the following tests
