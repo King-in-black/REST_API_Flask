@@ -13,6 +13,7 @@ app = create_app()
 Trainer_Schema=Trainer_Schema()
 Data_Schema=Data_Schema()
 Player_Schema=Player_Schema()
+
 @app.route('/homepage', methods=['GET', 'POST'])
 # a homepage for the webapp
 def homepage():
@@ -168,7 +169,10 @@ def create_player():
 
     The database will be requested to add the information of the player(ID and password)
      with the json file
-    :return: the message of the player with certain player_ID is added successfully.
+    :return: the message of the player wi
+
+
+    th certain player_ID is added successfully.
 
     '''
     player_json=request.get_json()
@@ -237,7 +241,7 @@ def delete_trainer():
 def add_data_from_csv():
     """
     Adds data to the database through the csv file. A unique dataset_ID will be allocated to every csv file.
-    Every data row's Data_ID will increase automatically.
+    Every data row's Data_ID will increase automatically. Read from
 
     """
     # the csv locates in the data file

@@ -1,17 +1,15 @@
 import os
+from flask import Flask
+import pytest
+import tempfile
 from flask_marshmallow import Marshmallow
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-import pytest
-import tempfile
-@pytest.fixture(scope='session')
-def db(test_config=None):
-    db = SQLAlchemy()
-    return db
-@pytest.fixture(scope='session')
-def ma(test_config=None):
-    ma = Marshmallow()
-    return ma
+from sqlalchemy.orm import DeclarativeBase
+import csv
+from pathlib import Path
+db = SQLAlchemy()
+ma = Marshmallow()
 @pytest.fixture(scope='session')
 def app(test_config=None):
     '''
@@ -49,9 +47,9 @@ def app(test_config=None):
     with app.app_context():
         db.create_all()
     yield app
-    os.close(test_db_fd)  # Close the file descriptor
-    os.unlink(test_db_path)  # Delete the temporary file
-
+    #os.close(test_db_fd)  # Close the file descriptor
+    #os.unlink(test_db_path)  # Delete the temporary file
+    # can not created correctly
     # ensure the instance folder exists
 
 

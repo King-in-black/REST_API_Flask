@@ -11,6 +11,9 @@ class Trainer(db.Model):
     password: Mapped[str] = mapped_column(db.String(32), unique=False, nullable=False)
     player: Mapped["Player"] = relationship('Player',back_populates="trainer")
     data: Mapped["data"] = relationship('Data',back_populates="trainer")
+
+
+
 class Player(db.Model):
     '''
 
