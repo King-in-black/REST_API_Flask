@@ -37,6 +37,8 @@ def create_trainer():
     try:
        trainer_json=request.get_json()
        trainer= Trainer_Schema().load(trainer_json)
+       if (db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()) != None:
+           return jsonify({"error": "User with this ID already exists"}), 409
        db.session.add(trainer)
        db.session.commit()
        return jsonify({"message":f"Trainer added with the trainer_ID={trainer.Trainer_ID}"}),201
@@ -57,6 +59,8 @@ def create_Datarow():
     try:
        data_json = request.get_json()
        data = Data_Schema().load(data_json)
+       if (db.session.execute(db.select(Data).filter_by(Data_ID=data.Data_ID)).scalar_one()) != None:
+           return jsonify({"error": "User with this ID already exists"}), 409
        db.session.add(data)
        db.session.commit()
        return jsonify({"message":f"Data added with the Data_ID={data.Data_ID} and with the Data_base={data.Dataset_ID}"}),201
