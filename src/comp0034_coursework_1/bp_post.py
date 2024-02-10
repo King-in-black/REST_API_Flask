@@ -1,18 +1,19 @@
-@app.route('/player_add',methods=['GET', 'POST'])
+from flask import Blueprint
+post_bp = Blueprint('post', __name__)
+from .schemas import Player_Schema,Trainer_Schema,Data_Schema
+from .extension import db
+from flask import request,jsonify
+
+
+@post_bp.route('/player_add',methods=['GET', 'POST'])
 def create_player():
-    try:
+    player_json = request.get_json()
+    player = Player_Schema.load(player_json)
+    db.session.add(player)
+    db.session.commit()
+    return jsonify({"message": f"Player added with the player_ID={player.Player_ID}"}), 201
 
-        player_json = request.get_json()
-        player = Player_Schema.load(player_json)
-        db.session.add(player)
-        db.session.commit()
-        return jsonify({"message": f"Player added with the player_ID={player.Player_ID}"}), 201
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"error": str(e)}), 400
-
-
-@app.post('/trainer_add')
+@post_bp.route('/trainer_add',methods=['GET', 'POST'])
 def create_trainer():
     '''
 
@@ -29,7 +30,7 @@ def create_trainer():
     db.session.commit()
     return {"message":f"Trainer added with the trainer_ID={trainer.Trainer_ID}"}
 
-@app.route('/Datarow_add',methods=['GET', 'POST'])
+@post_bp.route('/Datarow_add',methods=['GET', 'POST'])
 def create_Datarow():
     '''
     add a data row with a json file with certain content.
