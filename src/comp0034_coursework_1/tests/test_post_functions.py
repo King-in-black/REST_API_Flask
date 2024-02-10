@@ -52,8 +52,7 @@ def test_trainer_post_function_1(client,trainer_json_a):
     )
     assert response.data != None
     assert response.status_code == 201
-    obj2 = db.session.execute(
-        db.select(Trainer).filter_by(Trainer_ID='a', password='********')).scalar()
+    obj2 = db.session.execute(db.select(Trainer).filter_by(Trainer_ID='a', password='********')).scalar()
     assert obj2 != None
 def test_trainer_post_function_2(client,trainer_json_b):
     '''

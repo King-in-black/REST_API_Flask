@@ -283,6 +283,7 @@ def get_data(code):
     # raise an error if multiple records are found
     result = Data_Schema.dump(data)
     return result
+
 @app.get('/Database_get/<code>')
 def get_datarow_through_Database_ID(code):
     '''
@@ -318,23 +319,6 @@ def delete_Datarow(code):
         return {'error': 'Record of Data_row not found'}
 
 
-@app.delete('/delete_database/<code>')
-def delete_Database(code):
-    '''
-        The database will be requested to delete the information of the Dataset with the dataset_ID.
-        After getting the request, the database will check whether the record fits. Then the dataset will delete if there is
-        the matched dataset_ID
-        :param code: the dataset_ID that user want to delete
-    '''
-    a = db.session.execute(db.select(Data).filter_by(Dataset_ID=code))
-    data = a.scalars().all()
-    if data:
-        for i in data:
-            db.session.delete(i)
-        db.session.commit()
-        return {'message': 'Record of Database deleted  successfully'}
-    else:
-        return {'error': 'Record of Data_base not found'}
 
 @app.route('/datarow/<code1>/player/<code2>',methods=["GET","POST"])
 def row_relationship_addition_player(code1,code2):
