@@ -1,9 +1,9 @@
 from flask import Blueprint
-auth_bp = Blueprint('get', __name__)
+get_bp = Blueprint('get', __name__)
 from .models import Player,Trainer,Data
 from .schemas import Player_Schema,Trainer_Schema,Data_Schema
-from. import db
-@auth_bp.get('/get_player/<code>')
+from .extension import db
+@get_bp.get('/get_player/<code>')
 def get_player(code):
     """
     The database will be requested to provide the information of the player with player ID
@@ -15,7 +15,7 @@ def get_player(code):
     result = Player_Schema().dump(player)
     return result
 
-@auth_bp.get('/get_trainer/<code>')
+@get_bp.get('/get_trainer/<code>')
 def get_trainer(code):
     """
     The database will be requested to provide the information of the trainer with certain trainer ID
@@ -28,7 +28,7 @@ def get_trainer(code):
     result = Trainer_Schema().dump(trainer)
     return result
 
-@auth_bp.get('/get_player_t/<code>')
+@get_bp.get('/get_player_t/<code>')
 def get_player_through_trainer_ID(code):
     """
 
@@ -47,7 +47,7 @@ def get_player_through_trainer_ID(code):
         List.append(result)
     return List
 
-@auth_bp.get('/Datarow_get/<code>')
+@get_bp.get('/Datarow_get/<code>')
 def get_data(code):
     """Returns the json file of the data row with certain ID of data
     :param code: The ID  of the data row
@@ -57,7 +57,7 @@ def get_data(code):
     # raise an error if multiple records are found
     result = Data_Schema.dump(data)
     return result
-@auth_bp.get('/Database_get/<code>')
+@get_bp.get('/Database_get/<code>')
 def get_datarow_through_Database_ID(code):
     '''
     Returns all the json files from same csv file with certain Dataset_ID.

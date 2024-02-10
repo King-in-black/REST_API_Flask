@@ -1,5 +1,5 @@
-from .import ma
-from .import db
+from .extension import ma
+from .extension import db
 from .models import Trainer,Player,Data
 class Data_Schema(ma.SQLAlchemySchema):
     class Meta:

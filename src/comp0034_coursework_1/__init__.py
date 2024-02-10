@@ -2,13 +2,13 @@ import os
 from flask_marshmallow import Marshmallow
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy()
-ma = Marshmallow()
+from .bp_get import get_bp
+from.extension import db,ma
 
 def create_app(test_config=None):
     # create the Flask app
     app = Flask(__name__, instance_relative_config=True)
+    app.register_blueprint(get_bp, url_prefix='/get')
     # configure the Flask app (see later notes on how to generate your own SECRET_KEY)
     app.config.from_mapping(
         SECRET_KEY='F9cHlU7EQoj1JF5MRpZE1A',
