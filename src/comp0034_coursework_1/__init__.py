@@ -2,9 +2,6 @@ import os
 from flask_marshmallow import Marshmallow
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase
-import csv
-from pathlib import Path
 
 db = SQLAlchemy()
 ma = Marshmallow()
@@ -37,7 +34,6 @@ def create_app(test_config=None):
     ma.init_app(app)
     # Models are defined in the models module, so you must import them before calling create_all, otherwise SQLAlchemy
     # will not know about them.
-    ''
     from .models import Trainer, Data, Player
     # Create the tables in the database
     # create_all does not update tables if they are already in the database.
@@ -46,5 +42,7 @@ def create_app(test_config=None):
     return app
     # ensure the instance folder exists
 
+if __name__ == '__main__':
+    app= create_app()
 
 

@@ -1,9 +1,9 @@
 
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
-from ..models import Player,Trainer,Data
+from ..models import Data,Trainer,Player
 from .. import schemas
-from .conftest import db
+from .. import db
 def test_player_post_function_1(client,player_json_a,app):
     '''
     This is the first test function
@@ -13,28 +13,21 @@ def test_player_post_function_1(client,player_json_a,app):
     and whether the database has same record as json file.
     :param client: the test client
     '''
-    '''
-    obj1 = db.session.execute(db.select(Player).filter_by(Player_ID='arnold', password='********',Trainer_ID='a')).scalar()
-    try:
-        assert obj1 == None
-    except:
-        print('there has already the records of Player_ID : arnold')
-    '''
+    player_json_1 = {
+        'Player_ID': 'arnold',
+        'password': '********',
+        'Trainer_ID': 'a'
+    }
     response=client.post(
         '/player_add',
-        json = player_json_a
+        json = player_json_1
     )
 
-    try:
-        assert response.status_code == 200
-    except:
-        print(f'the response.status_code is {response.status_code}')
-        print('status code is not 200')
+    assert response.text ==1
+    assert  player_json_1 == response.get_json()
+    assert response.status_code == 201
     obj2 = db.session.execute(db.select(Player).filter_by(Player_ID='arnold', password='********',Trainer_ID='a')).scalar()
-    try:
-        assert obj2 != None
-    except:
-        print('the records does not add in')
+    assert obj2 != None
 def test_player_post_function_2(client,player_json_b,app):
     '''
     This is the second test for the function.
@@ -68,12 +61,12 @@ def test_trainer_post_function_1(client,trainer_json_a,app):
     obj1 = db.session.execute(
         db.select(Trainer).filter_by(Trainer_ID='a', password='********')).scalar()
     assert obj1 == None
+    '''
     response = client.post(
         '/trainer_add',
         json=trainer_json_a
     )
     assert response.status_code == 200
-    '''
     obj2 = db.session.execute(
         db.select(Trainer).filter_by(Trainer_ID='a', password='********')).scalar()
     assert obj2 != None

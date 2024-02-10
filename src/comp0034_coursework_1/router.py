@@ -1,19 +1,16 @@
 # Import the Flask class from the Flask library
 # python -m src.comp0034_coursework_1.router
-from flask import Flask ,request ,redirect , url_for, render_template,flash ,abort
-from .import create_app
+from flask import Flask ,request ,redirect , url_for, render_template,flash ,abort,Blueprint
+from . import create_app
 from .import db
-from .models import Trainer,Player,Data
-from.schemas import Trainer_Schema,Data_Schema,Player_Schema
+from  .models import Trainer,Player,Data
+from .schemas import Trainer_Schema,Data_Schema,Player_Schema
 import jsonify
 import pandas as pd
+from flask import jsonify, request
 # Create an instance of a Flask application
 #import all the necessary functions to call the instance of schema and flasks
-app = create_app()
-Trainer_Schema=Trainer_Schema()
-Data_Schema=Data_Schema()
-Player_Schema=Player_Schema()
-
+app=create_app()
 @app.route('/homepage', methods=['GET', 'POST'])
 # a homepage for the webapp
 def homepage():
@@ -117,7 +114,20 @@ def login():
     return render_template('login.html')
 
 
-@app.get('/trainer/<code>')
+@app.get('/get_player/<code>')
+def get_player(code):
+    """
+    The database will be requested to provide the information of the player with player ID
+    return the json file of the player with certain ID.
+    :param code: The ID  of the player
+    :returns: the JSON format of the trainer with the certain ID
+    """
+
+    player = db.session.execute(db.select(Player).filter_by(Player_ID=code)).scalar_one()
+    result = Player_Schema().dump(player)
+    return result
+
+@app.get('/get_trainer/<code>')
 def get_trainer(code):
     """
     The database will be requested to provide the information of the trainer with certain trainer ID
@@ -127,24 +137,10 @@ def get_trainer(code):
     """
 
     trainer = db.session.execute(db.select(Trainer).filter_by(Trainer_ID=code)).scalar_one()
-    result = Trainer_Schema.dump(trainer)
+    result = Trainer_Schema().dump(trainer)
     return result
 
-@app.get('/player/<code>')
-def get_player(code):
-    """
-
-    The database will be requested to provide the information of the player with certain player ID
-    return the json file of the player with certain ID.
-    :param code: The ID  of the player
-    :returns: the JSON format of the player with the certain ID
-
-    """
-    player = db.session.execute(db.select(Player).filter_by(Player_ID=code)).scalar_one()
-    result = Player_Schema.dump(player)
-    return result
-
-@app.get('/player_t/<code>')
+@app.get('/get_player_t/<code>')
 def get_player_through_trainer_ID(code):
     """
 
@@ -159,27 +155,23 @@ def get_player_through_trainer_ID(code):
     a = db.session.execute(db.select(Player).filter_by(Trainer_ID=code))
     players = a.scalars().all()
     for i in players:
-        result = Player_Schema.dump(i)
+        result = Player_Schema().dump(i)
         List.append(result)
     return List
 
-@app.post('/player_add')
+@app.route('/player_add',methods=['GET', 'POST'])
 def create_player():
-    '''
+    try:
 
-    The database will be requested to add the information of the player(ID and password)
-     with the json file
-    :return: the message of the player wi
+        player_json = request.get_json()
+        player = Player_Schema.load(player_json)
+        db.session.add(player)
+        db.session.commit()
+        return jsonify({"message": f"Player added with the player_ID={player.Player_ID}"}), 201
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 400
 
-
-    th certain player_ID is added successfully.
-
-    '''
-    player_json=request.get_json()
-    player= Player_Schema.load(player_json)
-    db.session.add(player)
-    db.session.commit()
-    return {"message":f"Player added with the player_ID={player.Player_ID}"}
 
 @app.post('/trainer_add')
 def create_trainer():
@@ -191,7 +183,9 @@ def create_trainer():
 
     '''
     trainer_json=request.get_json()
+    print(trainer_json)
     trainer= Trainer_Schema.load(trainer_json)
+    print(trainer)
     db.session.add(trainer)
     db.session.commit()
     return {"message":f"Trainer added with the trainer_ID={trainer.Trainer_ID}"}
