@@ -39,11 +39,12 @@ def update_Data(code):
     '''
         Allow user to update Data information according to the Data_ID
     '''
-    data = request.get_json()
-    new_record = Data_Schema().load(data)
+    new_record = request.get_json()
     old_record = db.session.execute(db.select(Data).filter_by(Data_ID=code)).scalar()
+    for key, value in new_record.items():
+        # update the records
+        setattr(old_record, key, value)
     if not old_record:
         return jsonify({'message': 'Player not found'}), 404
-    old_record.password = new_record.password
     db.session.commit()
     return jsonify({'message': 'Player password updated successfully'}), 201

@@ -6,6 +6,7 @@ from .bp_get import get_bp
 from.extension import db,ma
 from .bp_post import post_bp
 from .bp_delete import delete_bp
+from .bp_put import put_bp
 import pandas as pd
 from .models import Data
 current_file_path = os.path.realpath(__file__)
@@ -19,6 +20,7 @@ def create_app(test_config=None):
     app.register_blueprint(get_bp, url_prefix='/get')
     app.register_blueprint(post_bp, url_prefix='/post')
     app.register_blueprint(delete_bp, url_prefix='/delete')
+    app.register_blueprint(put_bp, url_prefix='/put')
     # configure the Flask app (see later notes on how to generate your own SECRET_KEY)
     app.config.from_mapping(
         SECRET_KEY='F9cHlU7EQoj1JF5MRpZE1A',
