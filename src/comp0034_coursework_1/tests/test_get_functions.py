@@ -57,3 +57,16 @@ def test_data(client,data_row_json):
         assert json_data['accX'] == 1
         assert json_data['accY'] == 1
         assert json_data['accZ'] == 1
+
+def test_get_player_through_trainer_ID(client,player_json_c):
+        response1=client.post('post/player_add',
+                              json=player_json_c)
+        assert  response1.status_code ==201
+        response2 =client.get('get/get_player_t/a')
+        assert  response2.status_code == 200
+        json_data = response2.get_json()
+        assert  json_data[0]['Player_ID'] == 'arnold'
+        assert  json_data[0]['Trainer_ID'] == 'a'
+        assert  json_data[1]['Player_ID'] == 'cat'
+        assert  json_data[1]['Trainer_ID'] == 'a'
+
