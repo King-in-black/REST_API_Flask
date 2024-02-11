@@ -82,6 +82,7 @@ def test_data_put_function_1(client,data_row_json):
         'Average_rotational_speed': 2.0
     }
     )
+    #
     assert response2.status_code == 201
     obj2 = db.session.execute( db.select(Data).filter_by(Average_rotational_speed=2.0)).scalar()
     assert obj2 != None
