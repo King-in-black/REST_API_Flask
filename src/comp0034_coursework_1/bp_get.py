@@ -55,7 +55,7 @@ def get_data(code):
     """
     data = db.session.execute(db.select(Data).filter_by(Data_ID=code)).scalar_one()
     # raise an error if multiple records are found
-    result = Data_Schema.dump(data)
+    result = Data_Schema().dump(data)
     return result
 @get_bp.get('/Database_get/<code>')
 def get_datarow_through_Database_ID(code):
@@ -68,7 +68,7 @@ def get_datarow_through_Database_ID(code):
     obj = db.session.execute(db.select(Data).filter_by(Dataset_ID=code))
     data = obj.scalars().all()
     for i in data:
-        result = Data_Schema.dump(i)
+        result = Data_Schema().dump(i)
         List.append(result)
     if not List:
         return {'message':f'no datarow uploaded with the Dataset_ID{code}'}

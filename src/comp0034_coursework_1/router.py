@@ -10,7 +10,7 @@ import pandas as pd
 from flask import jsonify, request
 # Create an instance of a Flask application
 #import all the necessary functions to call the instance of schema and flasks
-#app=create_app()
+app=create_app()
 @app.route('/homepage', methods=['GET', 'POST'])
 # a homepage for the webapp
 def homepage():

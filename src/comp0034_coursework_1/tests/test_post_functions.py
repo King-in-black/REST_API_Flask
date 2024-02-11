@@ -37,7 +37,7 @@ def test_player_post_function_2(client,player_json_b,app):
         json= player_json_b
     )
     # not sure whether it is 404 or not
-    assert response2.status_code == 201
+    assert response2.status_code == 409
 
 def test_trainer_post_function_1(client,trainer_json_a):
     '''
@@ -74,4 +74,39 @@ def test_trainer_post_function_2(client,trainer_json_b):
         json= trainer_json_b
     )
     # not sure whether it is 404 or not
+    assert response.status_code == 409
+
+def test_data_post_function_1(client,data_row_json):
+    '''
+    This is the first test function for the data_row
+    Ensure the test_database does not have the record first
+    the function asks to import a json file of a player to the database.
+    And check whether it is working successfully by checking its status code
+    and whether the database has same record as json file.
+    :param client: the test client
+    '''
+    response=client.post(
+        '/post/Datarow_add',
+        json = data_row_json
+    )
+    print(response.json)
     assert response.status_code == 201
+    obj2 = db.session.execute(db.select(Data).filter_by(accX=1,accY=1,accZ=1)).scalar()
+    assert obj2 != None
+def test_data_post_function_2(client,data_row_json):
+    '''
+    This is the second test for the function.
+    :param client: the test client
+    '''
+    response1=client.post(
+        '/post/Datarow_add',
+        json = data_row_json
+    )
+    response2 = client.post(
+        '/post/Datarow_add',
+        json= data_row_json
+    )
+    # not sure whether it is 404 or not
+    assert response1.status_code == 201
+    assert response2.status_code == 201
+    # Data_ID is different; therefore, every datarow record will be add successfully;

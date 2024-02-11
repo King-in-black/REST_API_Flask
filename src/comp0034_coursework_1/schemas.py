@@ -9,6 +9,7 @@ class Data_Schema(ma.SQLAlchemySchema):
         include_relationships = True
 
     Data_ID = ma.auto_field()
+    Dataset_ID=ma.auto_field()
     Player_ID = ma.auto_field()
     Trainer_ID = ma.auto_field()
     timestamp = ma.auto_field()
@@ -23,6 +24,7 @@ class Data_Schema(ma.SQLAlchemySchema):
     Resultant_Gyro=ma.auto_field()
     Average_Speed=ma.auto_field()
     Average_rotational_speed =ma.auto_field()
+
 
 class Trainer_Schema(ma.SQLAlchemySchema):
     class Meta:

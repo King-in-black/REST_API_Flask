@@ -10,9 +10,12 @@ from .. import db
 from .. import ma
 @pytest.fixture(scope='module')
 def app():
-    app=create_app()
-    app.config.update({'TESTING':True,
-                       })
+    app=create_app(test_config={
+                      'TESTING':True,
+              "SQLALCHEMY_ECHO": True,
+        "SQLALCHEMY_DATABASE_URI":"sqlite:///:memory:"
+                                })
+
     yield app
 @pytest.fixture(scope='module')
 def client(app):
@@ -80,20 +83,21 @@ def trainer_json_b():
     return trainer_json_2
 @pytest.fixture(scope='session')
 def data_row_json():
-    data_json= { "Dataset_ID" : "1",
-                 "Player_ID" : "arnold",
-                 'Trainer_ID':'a',
-                  "timestamp":1,
-                   "accX" :1,
-                   "accY" :1,
-                   "accZ":1,
-                    "gyroX":1,
-                    "gyroY":1,
-                     "gyroZ":1,
-                    "Activity":1,
-                    "Resultant_Acc":1,
-                     "Resultant_Gyro":1,
-                 "Average_Speed":1,
-                 'Average_rotational_speed':1
-                 }
+    data_json =   {
+        "Dataset_ID": 1,
+        "Player_ID": "arnold",
+        'Trainer_ID': 'a',
+        "timestamp": 1.0,
+        "accX": 1.0,
+        "accY": 1.0,
+        "accZ": 1.0,
+        "gyroX": 1.0,
+        "gyroY": 1.0,
+        "gyroZ": 1.0,
+        "Activity": True,
+        "Resultant_Acc": 1.0,
+        "Resultant_Gyro": 1.0,
+        "Average_Speed": 1.0,
+        'Average_rotational_speed': 1.0
+    }
     return data_json
