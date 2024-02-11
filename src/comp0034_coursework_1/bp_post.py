@@ -12,7 +12,7 @@ def create_player():
     try:
         player_json = request.get_json()
         player = Player_Schema().load(player_json)
-        if (db.session.execute(db.select(Player).filter_by(Player_ID=player.Player_ID)).scalar_one())!= None:
+        if (db.session.execute(db.select(Player).filter_by(Player_ID=player.Player_ID)).scalar())!= None:
             return jsonify({"error": "User with this ID already exists"}), 409
         db.session.add(player)
         db.session.commit()
@@ -20,8 +20,9 @@ def create_player():
     except ValidationError as e:
         db.session.rollback()
         return jsonify(e.messages), 400
-    except Exception as e:
-        return jsonify({"error": "Internal server error"}), 500
+
+    #except Exception as e:
+       # return jsonify({"error": "Internal server error"}), 500
 
 
 
@@ -37,7 +38,7 @@ def create_trainer():
     try:
        trainer_json=request.get_json()
        trainer= Trainer_Schema().load(trainer_json)
-       if (db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar_one()) != None:
+       if (db.session.execute(db.select(Trainer).filter_by(Trainer_ID=trainer.Trainer_ID)).scalar()) != None:
            return jsonify({"error": "User with this ID already exists"}), 409
        db.session.add(trainer)
        db.session.commit()
@@ -59,7 +60,7 @@ def create_Datarow():
     try:
        data_json = request.get_json()
        data = Data_Schema().load(data_json)
-       if (db.session.execute(db.select(Data).filter_by(Data_ID=data.Data_ID)).scalar_one()) != None:
+       if (db.session.execute(db.select(Data).filter_by(Data_ID=data.Data_ID)).scalar()) != None:
            return jsonify({"error": "User with this ID already exists"}), 409
        db.session.add(data)
        db.session.commit()

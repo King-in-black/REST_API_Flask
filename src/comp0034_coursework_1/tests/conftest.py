@@ -11,7 +11,8 @@ from .. import ma
 @pytest.fixture(scope='module')
 def app():
     app=create_app()
-    app.config.update({'Testing':True})
+    app.config.update({'TESTING':True,
+                       })
     yield app
 @pytest.fixture(scope='module')
 def client(app):

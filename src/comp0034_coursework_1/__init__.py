@@ -79,7 +79,6 @@ def read_csv():
             data_row = Data(**datarow)  # Create data instance through the dictionary.
             db.session.add(data_row)
         db.session.commit()
-        return {"message": f"Dataset added with the Dataset_ID={max_dataset_id}"}
 
 
 if __name__ == '__main__':

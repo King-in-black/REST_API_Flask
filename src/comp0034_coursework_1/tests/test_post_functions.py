@@ -14,6 +14,7 @@ def test_player_post_function_1(client,player_json_a):
         '/post/player_add',
         json = player_json_a
     )
+    print(response.json)
     assert response.status_code == 201
     obj2 = db.session.execute(db.select(Player).filter_by(Player_ID='arnold', password='********',Trainer_ID='a')).scalar()
     assert obj2 != None
