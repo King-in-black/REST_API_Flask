@@ -3,7 +3,18 @@ delete_bp = Blueprint('delete', __name__)
 from .models import Player,Trainer,Data
 from .schemas import Player_Schema,Trainer_Schema,Data_Schema
 from .extension import db
-
+@delete_bp.errorhandler(409)
+def resource_already_exist(e):
+    return jsonify(error=str(e)), 409
+@delete_bp.errorhandler(404)
+def resource_not_found(e):
+    return jsonify(error=str(e)), 404
+@delete_bp.errorhandler(500)
+def Internet_error(e):
+    return jsonify(error=str(e)), 500
+@delete_bp.errorhandler(400)
+def Validation_error(e):
+    return jsonify(error=str(e)), 400
 @delete_bp.route('/delete_player', methods=['DELETE'])
 def delete_player():
     '''

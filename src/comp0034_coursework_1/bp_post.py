@@ -6,7 +6,18 @@ from flask import request,jsonify
 from marshmallow import ValidationError
 from sqlalchemy.exc import IntegrityError
 from .models import Data,Player,Trainer
-
+@post_bp.errorhandler(409)
+def resource_already_exist(e):
+    return jsonify(error=str(e)), 409
+@post_bp.errorhandler(404)
+def resource_not_found(e):
+    return jsonify(error=str(e)), 404
+@post_bp.errorhandler(500)
+def Internet_error(e):
+    return jsonify(error=str(e)), 500
+@post_bp.errorhandler(400)
+def Validation_error(e):
+    return jsonify(error=str(e)), 400
 @post_bp.route('/player_add', methods=['POST'])
 def create_player():
     try:

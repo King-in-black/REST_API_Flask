@@ -1,8 +1,21 @@
-from flask import Blueprint
+from flask import Blueprint,jsonify
 get_bp = Blueprint('get', __name__)
 from .models import Player,Trainer,Data
 from .schemas import Player_Schema,Trainer_Schema,Data_Schema
 from .extension import db
+
+@get_bp.errorhandler(409)
+def resource_already_exist(e):
+    return jsonify(error=str(e)), 409
+@get_bp.errorhandler(404)
+def resource_not_found(e):
+    return jsonify(error=str(e)), 404
+@get_bp.errorhandler(500)
+def Internet_error(e):
+    return jsonify(error=str(e)), 500
+@get_bp.errorhandler(400)
+def Validation_error(e):
+    return jsonify(error=str(e)), 400
 @get_bp.get('/get_player/<code>')
 def get_player(code):
     """

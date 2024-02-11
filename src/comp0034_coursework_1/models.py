@@ -4,7 +4,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .extension import db
 class Trainer(db.Model):
     '''
-
+    Add the trainer Model:
+    Trainer_ID is the unique ID of trainer
+    password is the password of the account
     '''
     __tablename__ ='trainer'
     Trainer_ID: Mapped[str] = mapped_column(db.String(16), primary_key=True,nullable=False)
@@ -12,11 +14,11 @@ class Trainer(db.Model):
     player: Mapped["Player"] = relationship('Player',back_populates="trainer")
     data: Mapped["data"] = relationship('Data',back_populates="trainer")
 
-
-
 class Player(db.Model):
     '''
-
+    Add the player Model:
+    Player_ID is the unique ID of player
+    password is the password of the account
     '''
     __tablename__ = "player"
     Player_ID: Mapped[str] = mapped_column(db.String(16), primary_key=True,unique=True,nullable=False)
@@ -27,7 +29,11 @@ class Player(db.Model):
 
 class Data(db.Model):
     '''
-
+    Add the Data Model from IMU　data with the Data_ID( ID for unique row)
+    Dataset_ID is the unique ID for the csv
+    Other properties are from csv
+    Resultant_Acc,Resultant_Gyro,Average_Speed,Average_rotational_speed are contents predicted from
+    machine learning model
     '''
     __tablename__ = "data"
     Data_ID = db.Column(db.Integer, primary_key=True, autoincrement=True)
