@@ -20,9 +20,8 @@ def create_player():
     except ValidationError as e:
         db.session.rollback()
         return jsonify(e.messages), 400
-
-    #except Exception as e:
-       # return jsonify({"error": "Internal server error"}), 500
+    except Exception as e:
+        return jsonify({"error": "Internal server error"}), 500
 
 
 
