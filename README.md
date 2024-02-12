@@ -29,5 +29,5 @@ The test suite includes files that cover a range of HTTP methods:
 - `models.py`: Manages database models, providing an abstraction layer over the database.
 - `schemas.py`: Contains Marshmallow schemas that facilitate serialization and deserialization of database models to and from JSON format.
 
-Remember to replace `img.png` with the actual path to your image if it's located in a different directory or has a different filename.
+
 
