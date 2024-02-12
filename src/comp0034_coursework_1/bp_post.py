@@ -31,6 +31,13 @@ def Validation_error(e):
 
 @post_bp.route("/player_add", methods=["POST"])
 def create_player():
+    """
+
+       The database will be requested to add the information of the player(ID and password)
+        with the json file
+       :return: the message of the trainer with certain player_ID is added successfully.
+
+    """
     try:
         player_json = request.get_json()
         player = Player_Schema().load(player_json)
@@ -92,7 +99,7 @@ def create_trainer():
 @post_bp.route("/Datarow_add", methods=["GET", "POST"])
 def create_Datarow():
     """
-    add a data row with a json file with certain content.
+    add a data row from a json file with certain content.
     """
     try:
         data_json = request.get_json()

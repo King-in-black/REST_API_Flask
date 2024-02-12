@@ -32,7 +32,7 @@ def update_player():
 @put_bp.route("/trainer", methods=["PUT"])
 def update_trainer():
     """
-    Allow user to update the password of the trainer
+    Allow user to update the password of the trainer who has already been in the database
     """
     data = request.get_json()
     new_record = Trainer_Schema().load(data)

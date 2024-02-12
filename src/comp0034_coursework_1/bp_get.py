@@ -61,7 +61,8 @@ def get_trainer(code):
 def get_player_through_trainer_ID(code):
     """
 
-    The database will be requested to provide the information of the player with certain trainer ID (foreign keys)
+    The database will be requested to provide the information of
+    the player with certain trainer ID (foreign keys)
     return the json file of the player with certain trainer ID.
     :param code: The ID  of the trainer connecting with players
     :returns: the all JSONs  of the player with the certain ID
