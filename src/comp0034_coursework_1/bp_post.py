@@ -33,9 +33,9 @@ def Validation_error(e):
 def create_player():
     """
 
-       The database will be requested to add the information of the player(ID and password)
-        with the json file
-       :return: the message of the trainer with certain player_ID is added successfully.
+    The database will be requested to add the information of the player(ID and password)
+     with the json file
+    :return: the message of the trainer with certain player_ID is added successfully.
 
     """
     try:

@@ -10,6 +10,7 @@ def test_player_post_function_1(client, player_json_a):
     And check whether it is working successfully by checking its status code
     and whether the database has same record as json file.
     :param client: the test client
+          player_json_a: the json file defined in conftest.py
     """
     response = client.post("/post/player_add", json=player_json_a)
     print(response.json)
@@ -31,6 +32,7 @@ def test_player_post_function_2(client, player_json_b, app):
     and whether the database has same record as json file.
     It should return a failure status.
     :param client: the test client
+        player_json_b: the json file defined in conftest.py
     """
     response1 = client.post("/post/player_add", json=player_json_b)
     response2 = client.post("/post/player_add", json=player_json_b)
@@ -45,6 +47,7 @@ def test_trainer_post_function_1(client, trainer_json_a):
     And check whether it is working successfully by checking its status code
     and whether the database has same record as json file.
     :param client: the test client
+    trainer_json_a: the json file defined in conftest.py
     """
     response = client.post("/post/trainer_add", json=trainer_json_a)
     assert response.data != None
@@ -64,6 +67,7 @@ def test_trainer_post_function_2(client, trainer_json_b):
     and whether the database has same record as json file.
     It should return a failure status.
     :param client: the test client
+    trainer_json_b: the json file defined in conftest.py
     """
     response = client.post("/post/trainer_add", json=trainer_json_b)
     response = client.post("/post/trainer_add", json=trainer_json_b)
@@ -75,10 +79,11 @@ def test_data_post_function_1(client, data_row_json):
     """
     This is the first test function for the data_row
     Ensure the test_database does not have the record first
-    the function asks to import a json file of a player to the database.
+    the function asks to import a json file of a datarow to the database.
     And check whether it is working successfully by checking its status code
     and whether the database has same record as json file.
     :param client: the test client
+    data_row_json: the json file defined in conftest.py
     """
     response = client.post("/post/Datarow_add", json=data_row_json)
     print(response.json)
@@ -93,6 +98,7 @@ def test_data_post_function_2(client, data_row_json):
     """
     This is the second test for the function.
     :param client: the test client
+    data_row_json: the json file defined in conftest.py
     """
     response1 = client.post("/post/Datarow_add", json=data_row_json)
     response2 = client.post("/post/Datarow_add", json=data_row_json)

@@ -6,6 +6,8 @@ from sqlalchemy import func
 def test_player_put_function_1(client, player_json_a):
     """
     Test to change the password of player
+     :param client: the test client
+            player_json_a: the json file defined in conftest.py
     """
     response1 = client.post("/post/player_add", json=player_json_a)
     print(response1.json)
@@ -32,6 +34,8 @@ def test_player_put_function_1(client, player_json_a):
 def test_trainer_put_function_1(client, trainer_json_a):
     """
     Test to change the password of player
+    :param client: the test client
+            trainer_json_a: the json file defined in conftest.py
     """
     response1 = client.post("/post/trainer_add", json=trainer_json_a)
     print(response1.json)
@@ -53,6 +57,8 @@ def test_trainer_put_function_1(client, trainer_json_a):
 def test_data_put_function_1(client, data_row_json):
     """
     Test to change content of data_row
+     :param client: the test client
+            data_row_json: the json file defined in conftest.py
     """
     response1 = client.post("/post/Datarow_add", json=data_row_json)
     print(response1.json)
